@@ -1,8 +1,12 @@
-import Robot;
-import Particlefilter;
-import Maze;
+import Robot
+import Particlefilter
+import Maze
 
-robot = Robot.Robot();
+
+robot = Robot.Robot("maze",0,0) #Initialse robot, change so that a maze is actually the input
+
+
+
 '''
 Robot robot
 Particlefilter particlefilter

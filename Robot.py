@@ -1,7 +1,60 @@
-'''Class Robot
+class Robot:
+    def __init__(self, _maze, _speed, _rotationSpeed): #give it a maze as input!
+        
+        self.maze = _maze
+        ###Variables for robot###
+        self.x = 0 #location, initiliased to zero as the robot initialy has no clue where it is
+        self.y = 0
+        self.orientation = 0 #[0, 2PI]
+        
+        self.speed = _speed; #Speed with which the robot moves forwards
+        self.rotationSpeed = _rotationSpeed; #
+        
+        self.movement = [0,0] # stores the last movement [length moved, rotation]
+        self.measurement = [0,0,0,0,0] #we can always re evaluate number of points here. DO NOT MAKE ANY HARD CODED LOOPS.
+        
+        #The following are hard coded values found from measurements of the precision of robot movement. Length of arrays to be determined
+        self.moveVar = [0,0,0,0,0] #variance in distance actually moved
+        self.moveMean = [0,0,0,0,0]
+        self.moveOrientVar = [0,0,0,0,0] #variance in orientation when moving forward
+        self.moveOrientMean = [0,0,0,0,0]
+        self.orientVar = [0,0,0,0,0] #variance in orientation when rotating
+        self.orientMean = [0,0,0,0,0]
+        self.measurementVar = [0,0,0,0,0] #variance in orientation when rotating
+        self.measurementMean = [0,0,0,0,0]
+        self.measurementLimHigh = 1e10 #limit for measurement. Set to some desired value
+        self.measurementLimLow = 0
 
+    #Moves the robot. postive values=forward, negative values=backward
+    def move(self, _distance):
+        return 0
+
+    #Rotate robot. Be aware of sign of angle. We need to figure out if CW is positive
+    def rotate(self, _angle):
+        return angle
+
+    #Updates measurement[] with a series of measurements.
+    def measure(self): 
+        return 0
+
+    #updates x, y and rotation
+    def updateBelief(self, _particleFilter): #updates x, y and rotation
+        return 0
+
+    #Finds the shortest path out of the maze. No need to have maze as input as the maze is a variable for the robot
+    def findPath(self):
+        return 0
+
+    # this function might just be moved to be a part of the measure() function.
+    def rotateServo(self): 
+        return 0
+
+
+
+
+'''
 #Variables
-int x, y;
+x, y; #int
 float orientation;
 int speed, rotationSpeed;
 int[2] movement; #array of distance forward as well as rotation. 
