@@ -1,4 +1,4 @@
-Class Robot
+'''Class Robot
 
 #Variables
 int x, y;
@@ -21,3 +21,4 @@ void measure(); #Updates measurement[] with a series of measurements.
 void updateBelief(Particlefilter particleFilter); #updates x, y and rotation
 void findPath() #Finds the shortest path out of the maze. No need to have maze as input as the maze is a variable for the robot
 void rotateServo() # this function might just be moved to be a part of the measure() function.
+'''

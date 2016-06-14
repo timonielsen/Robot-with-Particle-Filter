@@ -1,4 +1,4 @@
-Class Particlefilter
+'''Class Particlefilter
 
 #variables
 float noise;
@@ -7,3 +7,4 @@ Robot robot;
 Maze maze;
 
 Particlefilter(Maze maze, float noOfParticles); #constructor
+'''

@@ -1,6 +1,13 @@
+import Robot;
+import Particlefilter;
+import Maze;
+
+robot = Robot.Robot();
+'''
 Robot robot
 Particlefilter particlefilter
 Maze maze
+
 
 #Global variables
 int noOfParticles;
@@ -18,9 +25,10 @@ While(running){
 	robot.measure();
 	particleFilter.measure();
 	particleFilter.compare(robot);
-	robot.updateBelief(particleFilter);
+	robot.updateBelief(particlefilter);
 	particleFilter.resample();
 	robot.findPath();
 	robot.move();
 	particleFilter.updateLocation(robot);
 }
+'''
