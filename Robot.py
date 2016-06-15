@@ -25,28 +25,30 @@ class Robot:
         self.measurementLimHigh = 1e10 #limit for measurement. Set to some desired value
         self.measurementLimLow = 0
 
-    #Moves the robot. postive values=forward, negative values=backward
+    
     def move(self, _distance):
+        """Moves the robot. postive values=forward, negative values=backward"""
         return 0
 
-    #Rotate robot. Be aware of sign of angle. We need to figure out if CW is positive
     def rotate(self, _angle):
+        """Rotate robot. Be aware of sign of angle. We need to figure out if CW is positive"""
         return angle
 
-    #Updates measurement[] with a series of measurements.
     def measure(self): 
+        """Updates measurement[] with a series of measurements."""
         return 0
 
-    #updates x, y and rotation
     def updateBelief(self, _particleFilter): #updates x, y and rotation
+        """updates x, y and rotation"""
         return 0
 
-    #Finds the shortest path out of the maze. No need to have maze as input as the maze is a variable for the robot
     def findPath(self):
+        """Finds the shortest path out of the maze. 
+        No need to have maze as input as the maze is a variable for the robot"""
         return 0
 
-    # this function might just be moved to be a part of the measure() function.
-    def rotateServo(self): 
+    def rotateServo(self):
+        """this function might just be moved to be a part of the measure() function.""" 
         return 0
 
 
