@@ -13,11 +13,11 @@ layout = [['XXOO', 'OXXO', 'OXXX'],
           ['XOXO', 'OXXO', 'OXOX'],
           ['XXXO', 'OXXO', 'OOEX']]
 
-maze = Maze.Maze(layout, home)
+maze = Maze.Maze(layout, 10, 30)
+
 robot = Robot.Robot(maze, speedOfRobot, rotSpeedOfRotation) 
 particlefilter = Particlefilter.Particlefilter(particlefilterNoise, noOfParticles, maze)
 
-maze.layoutMaker(layout, 25, 30)
 maze.printLayout()
 
 '''
