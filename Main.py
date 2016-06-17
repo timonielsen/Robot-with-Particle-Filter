@@ -9,11 +9,15 @@ noOfParticles = 100 #number of particles in particle filter
 speedOfRobot = 1
 rotSpeedOfRotation = 1 #how fast the robot rotates
 
+layout = [['XXOO', 'OXXO', 'OXXX'],
+          ['XOXO', 'OXXO', 'OXOX'],
+          ['XXXO', 'OXXO', 'OOEX']]
+
 maze = Maze.Maze(layout, home)
 robot = Robot.Robot(maze, speedOfRobot, rotSpeedOfRotation) 
 particlefilter = Particlefilter.Particlefilter(particlefilterNoise, noOfParticles, maze)
 
-
+maze.layoutMaker(layout, 5, 30)
 
 '''
 Robot robot
