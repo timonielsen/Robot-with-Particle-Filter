@@ -3,7 +3,25 @@ class Maze:
 		self.layout = _layout
 		self.home = _home
 		self.allnodes = 0
+		self.fullLayout = 0
 
+
+	def printLayout(self):
+		"""prints the maze in the console"""
+		if self.fullLayout == 0:
+			return 0
+	
+		for row in self.fullLayout:
+			printRow = []
+			for el in row:
+				if el == 0:
+					printRow.append(' ')
+				elif el == 1:
+					printRow.append('X')
+				else:
+					printRow.append('O')
+			" ".join(printRow)
+			print(" ".join(printRow))
 
 	def layoutMaker(self, _layout ,_resolution, _fieldsize):
 		""" Buid a layout from a very simple layout. The layout must be rectangular!!!
@@ -82,31 +100,52 @@ class Maze:
 						exit()
 
 		#Now build the full layout. Don't worry too much about this part. It's a bit of a goose chase
-		#to really understand the matrix operations without drawing something
+		#to really understand the matrix operations without drawing what is actually happening
 		fullLayoutCellBased = []; #First the individual cells are scaled and this will then afterwards.
+		
+		#For each cell
 		for i in range(0, len(_layout)):
 			layoutRow = []
 			for j in range(0,len(_layout[i])):
 				cell = []
 
+				#create a matrix of size res x res for each cell
 				for m in range(0,_resolution):
 					cellRow = []
 					for n in range(0,_resolution):
-						if   n == 0             and _layout[i][j][0] == 'X':
-							makeWall = True
-						elif n == _resolution-1 and _layout[i][j][3] == 'X':
-							makeWall = True
-						elif m == 0             and _layout[i][j][1] == 'X':
-							makeWall = True
-						elif m == _resolution-1 and _layout[i][j][2] == 'X':
-							makeWall = True
-						else:
-							makeWall = False
+						makeWall = False
+						makeExit = False
+						if   n == 0:
+							if _layout[i][j][0] == 'X':
+								makeWall = True
+							elif _layout[i][j][0] == 'E' and m == _resolution/2:
+								makeExit = True
 
-						if makeWall:
-							cellRow.append('1')
+						if n == _resolution-1:
+							if _layout[i][j][3] == 'X':
+								makeWall = True
+							elif _layout[i][j][3] == 'E' and m == _resolution/2:
+								makeExit = True
+
+						if m == 0:
+							if _layout[i][j][1] == 'X':
+								makeWall = True
+							elif _layout[i][j][1] == 'E' and n == _resolution/2:
+								makeExit = True
+
+						if m == _resolution-1:
+							if _layout[i][j][2] == 'X':
+								makeWall = True
+							elif _layout[i][j][2] == 'E' and n == _resolution/2:
+								makeExit = True
+
+
+						if makeExit:
+							cellRow.append(2)
+						elif makeWall:
+							cellRow.append(1)
 						else:
-							cellRow.append('0')
+							cellRow.append(0)
 					cell.append(cellRow)
 				layoutRow.append(cell)
 			fullLayoutCellBased.append(layoutRow)
@@ -120,7 +159,7 @@ class Maze:
 					for n in range(0,len(fullLayoutCellBased[i][j][m])):
 						fullLayoutRow.append(fullLayoutCellBased[i][j][m][n])
 				fullLayout.append(fullLayoutRow)
-				print(fullLayoutRow)
+		self.fullLayout = fullLayout
 
 
 

@@ -17,7 +17,8 @@ maze = Maze.Maze(layout, home)
 robot = Robot.Robot(maze, speedOfRobot, rotSpeedOfRotation) 
 particlefilter = Particlefilter.Particlefilter(particlefilterNoise, noOfParticles, maze)
 
-maze.layoutMaker(layout, 5, 30)
+maze.layoutMaker(layout, 25, 30)
+maze.printLayout()
 
 '''
 Robot robot
