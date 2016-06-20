@@ -1,11 +1,15 @@
 import Robot
 import Particlefilter
 import Maze
+import math
+
+
+
 
 layout = 0 #probably an int array
 home = 0 #end of maze
 particlefilterNoise = 0 #the noise with which the resampling of points is affected
-noOfParticles = 100 #number of particles in particle filter
+noOfParticles = 1 #number of particles in particle filter
 speedOfRobot = 1
 rotSpeedOfRotation = 1 #how fast the robot rotates
 
@@ -17,8 +21,12 @@ maze = Maze.Maze(layout, 10, 30)
 
 robot = Robot.Robot(maze, speedOfRobot, rotSpeedOfRotation) 
 particlefilter = Particlefilter.Particlefilter(particlefilterNoise, noOfParticles, maze)
-
 maze.printLayout()
+
+print(round(0.2));
+print(round(0.8));
+
+particlefilter.measure()
 
 '''
 Robot robot

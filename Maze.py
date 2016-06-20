@@ -5,6 +5,8 @@ class Maze:
 		self.fieldsize = _fieldsize
 		self.allnodes = 0
 		self.fullLayout = layoutMaker(self.layout, self.resolution, self.fieldsize)
+		self.dimX = len(self.fullLayout) #Dimension of grid in X direction
+		self.dimY = len(self.fullLayout[0]) #Dimension of grid in Y direction
 
 
 	def printLayout(self):
