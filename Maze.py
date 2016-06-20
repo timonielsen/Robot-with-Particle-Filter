@@ -183,7 +183,9 @@ class Maze:
                     for dirW in directions_w:
                         for d in range(1, int(self.resolution / 2)):
                             weight = 60 / d
-                            if 0 < (a + dirW[0] * d) < (size + 1) and 0 < (b + dirW[1] * d) < (size + 1) and self.allNodes[(a + dirW[0] * d, b + dirW[1] * d)][7] < weight:
+                            if 0 < (a + dirW[0] * d) < (size + 1) and 0 < (b + dirW[1] * d) < (size + 1) \
+                                    and self.allNodes[(a + dirW[0] * d, b + dirW[1] * d)][7] < weight:
+
                                 self.allNodes[(a + dirW[0] * d, b + dirW[1] * d)][7] = weight
 
         # starting the open and closed list for A*
@@ -310,7 +312,7 @@ mazeWalls3 = [[160, 160], [240, 160]]
 
 mazeWalls4 = [[10, 10], [240, 10]]
 mazeWalls5 = [[240, 10], [240, 240]]
-mazeWalls6 = [[240, 240], [10, 240]]
+mazeWalls6 = [[160, 240], [10, 240]]
 mazeWalls7 = [[10, 240], [10, 10]]
 
 pathD = newMaze.path
