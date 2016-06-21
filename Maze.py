@@ -1,23 +1,35 @@
 from operator import itemgetter
-import tkinter as tk
+try:
+    # for Python2
+    import Tkinter as tk   ## notice capitalized T in Tkinter 
+except ImportError:
+    # for Python3
+    import tkinter as tk   ## notice here too
 import math
 
 
 class Maze:
-    def __init__(self, _start, _layout, _resolution, _fieldsize):
-        self.check = []
-        self.path = []
-        self.home = _start
-        self.allNodes = {}
-        self.layout = _layout
-        self.resolution = _resolution
-        self.fieldsize = _fieldsize
-        self.allnodes = {}
-        self.target = {}
-        self.fullLayout = []
+    def __init__(self, _layout, _resolution, _fieldsize):
+        """Initiliases the maze"""
+
+        #Maze geoemtry and layout
+        self.layout = _layout #Simple layout of maze, which is translated into a full layout
+        self.resolution = _resolution #Resolution with which the full layout will be produced
+        self.fieldsize = _fieldsize #Size of each cell in maze. In the competetion case is 30 (cm)
+
+        #Refinement of layout
+        self.fullLayout = self.layoutMaker()
+
+        #Refinement of node data 
+        self.allNodes = {} #Nodes of the maze containieng all info of each node
+        self.target = {} #Exit field
+        
+        #Parameters for path finding
+        self.home = (23, 2) #Location of robot.
         self.openList = []
         self.closedList = []
-        self.fullLayout = self.layoutMaker()
+        self.check = []
+        self.path = [] #The path from location of robot to the exit
         self.nodeSetup()
 
     def layoutMaker(self):
@@ -160,7 +172,7 @@ class Maze:
     def nodeSetup(self):
 
         # self.fullLayout = self.layoutMaker()
-        size = self.resolution * 3
+        size = self.resolution * 3 #TODO: Explain what is 3?
 
         # converting maze array into nodes with cost values and locations
         for v in range(1, (size + 1)):
@@ -252,7 +264,8 @@ class Maze:
                 if [n[0], n[1]] == [self.target[0], self.target[1]]:
                     print('Path Found')
                     path = self.getPath(n)
-                    return print(path)
+                    print(path)
+                    return path
 
                 # else add the new neighbors to the open list
                 else:
@@ -292,7 +305,7 @@ class Maze:
             " ".join(printRow)
             print(" ".join(printRow))
 
-
+'''
 start = (23, 2)
 resolution = 8
 fieldsize = 1
@@ -300,7 +313,7 @@ layout = [['XXOO', 'OXXO', 'OXXX'],
 	      ['XOXO', 'OXOO', 'OXXX'],
 	      ['XXXO', 'OOXO', 'OXEX']]
 
-newMaze = Maze(start, layout, resolution, fieldsize)
+newMaze = Maze(layout, resolution, fieldsize)
 newMaze.astar()
 
 
@@ -377,3 +390,4 @@ for (x0, y0, x1, y1) in linemaker(mazeWalls7):
     cv.create_line(x0, y0, x1, y1, width=1, fill="black")
 
 root.mainloop()
+'''
