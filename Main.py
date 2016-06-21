@@ -17,14 +17,12 @@ layout = [['XXOO', 'OXXO', 'OXXX'],
           ['XOXO', 'OXXO', 'OXOX'],
           ['XXXO', 'OXXO', 'OOEX']]
 
-maze = Maze.Maze(layout, 10, 30)
+maze = Maze.Maze(layout, 50, 30)
 
 robot = Robot.Robot(maze, speedOfRobot, rotSpeedOfRotation) 
 particlefilter = Particlefilter.Particlefilter(particlefilterNoise, noOfParticles, maze)
+#maze.printLayoutAdvanced()
 maze.printLayout()
-
-print(round(0.2));
-print(round(0.8));
 
 particlefilter.measure()
 

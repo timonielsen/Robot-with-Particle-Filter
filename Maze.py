@@ -1,5 +1,8 @@
 class Maze:
 	def __init__(self, _layout, _resolution, _fieldsize):
+		if _resolution <= 0 or _fieldsize <= 0 or _layout == 0:
+			print("divide by 0 error")
+			exit()
 		self.layout = _layout
 		self.resolution = _resolution
 		self.fieldsize = _fieldsize
@@ -8,6 +11,26 @@ class Maze:
 		self.dimX = len(self.fullLayout) #Dimension of grid in X direction
 		self.dimY = len(self.fullLayout[0]) #Dimension of grid in Y direction
 
+	def printLayoutAdvanced(self):
+		"""prints the layout with more infomation, good for debugging.
+		Each field is printed as F_XXX_YYY where F is a reference to the function of the cell and 
+		XXX is the Z cordinate and YYY is Y coordinate counting from upper left corner"""
+		if self.fullLayout == 0:
+			return 0
+
+		if self.dimX > 999 or self.dimY >999:
+			print("Dimensions of maze too large for advanced print of layout")
+			return 0
+		print('')
+		for i in range(0,len(self.fullLayout)):
+			printRow = []
+			for j in range(0,len(self.fullLayout[i])):
+				printRow.append(str(self.fullLayout[i][j]) + '_' + format(i,'03d') +'_'+ format(j,'03d'))
+			print(" ".join(printRow))
+			print('')
+			print('')
+		return 0
+		
 
 	def printLayout(self):
 		"""prints the maze in the console"""
