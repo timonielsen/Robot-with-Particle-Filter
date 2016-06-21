@@ -1,4 +1,5 @@
 import Particle
+import math
 
 class Particlefilter:
 	 def __init__(self, _noise, _noOfParticles, _maze):
@@ -10,7 +11,7 @@ class Particlefilter:
 	 	Somehow we need the dimensions of the maze to do this properly"""
 	 	self.particles = []
 	 	for i in range(self.noOfParticles):
-	 		self.particles.append(Particle.Particle(0,0,0)) #change to some random value
+	 		self.particles.append(Particle.Particle(_maze.dimX/2,_maze.dimY/2,0)) #change to some random value
 
 	 def measure(self):
 	 	"""for each particles calculate the distance to the walls"""
