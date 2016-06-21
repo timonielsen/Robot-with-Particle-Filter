@@ -12,19 +12,17 @@ particlefilterNoise = 0 #the noise with which the resampling of points is affect
 noOfParticles = 1 #number of particles in particle filter
 speedOfRobot = 1
 rotSpeedOfRotation = 1 #how fast the robot rotates
-resolution = 8
-fieldSize = 30
 
 layout = [['XXOO', 'OXXO', 'OXXX'],
           ['XOXO', 'OXXO', 'OXOX'],
           ['XXXO', 'OXXO', 'OOEX']]
 
-maze = Maze.Maze(layout, resolution, fieldSize)
+maze = Maze.Maze(layout, 50, 30)
+
 robot = Robot.Robot(maze, speedOfRobot, rotSpeedOfRotation) 
 particlefilter = Particlefilter.Particlefilter(particlefilterNoise, noOfParticles, maze)
 #maze.printLayoutAdvanced()
 maze.printLayout()
-maze.astar()
 
 particlefilter.measure()
 
