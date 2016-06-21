@@ -11,17 +11,20 @@ rotSpeedOfRotation = 1 #how fast the robot rotates
 resolution = 8
 fieldSize = 30
 
-layout = [['XXOO', 'OXXO', 'OXXX'],
-          ['XOXO', 'OXXO', 'OXOX'],
-          ['XXXO', 'OXXO', 'OOEX']]
+layout = [['XXOO', 'OXXO', 'OXXO', 'OXXX'],
+          ['XOXO', 'OXXO', 'OXXO', 'OXOX'],
+          ['XXXO', 'OXXO', 'OXEO', 'OOXX']]
 
-maze = Maze.Maze(layout, 8, 30)
+maze = Maze.Maze(layout, 20, 30)
 robot = Robot.Robot(maze, speedOfRobot, rotSpeedOfRotation) 
 particlefilter = Particlefilter.Particlefilter(particlefilterNoise, noOfParticles, maze)
 
-maze.printLayout()
-maze.astar()
 
+
+
+
+maze.astar()
+maze.printLayoutAdvanced(2)
 '''
 Robot robot
 Particlefilter particlefilter

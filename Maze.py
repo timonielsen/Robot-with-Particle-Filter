@@ -30,7 +30,7 @@ class Maze:
         self.dimY = len(self.fullLayout) #Dimension of grid in Y direction
 
         #Parameters for path finding
-        self.home = (23, 2) #Location of robot.
+        self.home = (13, 60) #Location of robot.
         self.openList = []
         self.closedList = []
         self.check = []
@@ -181,27 +181,27 @@ class Maze:
         sizeY = self.dimY
 
         # converting maze array into nodes with cost values and locations
-        for v in range(1, (sizeY+1)):
-            for u in range(1, (sizeX+1)):
+        for u in range(0, sizeY):
+            for v in range(0, sizeX):
 
                 # [x, y, wall, fcost(total), hcost (heueristic), gcost (movement), parent, weight]
-                self.allNodes[(u, v)] = [u, v, self.fullLayout[v - 1][u - 1], 10000, 0, 0, (0, 0), 0]
+                self.allNodes[(u, v)] = [u, v, self.fullLayout[u][v], 10000, 0, 0, (0, 0), 0]
 
                 # selecting the target node from array
-                if self.fullLayout[v - 1][u - 1] == 2:
+                if self.fullLayout[u][v] == 2:
                     self.target = self.allNodes[(u, v)]
 
         # Assigning weights to the node that are close to the walls
-        for b in range(1, sizeY + 1):
-            for a in range(1, sizeX + 1):
+        for a in range(0, sizeY):
+            for b in range(0, sizeX):
 
-                if self.fullLayout[b - 1][a - 1] == 1:
+                if self.fullLayout[a][b] == 1:
                     directions_w = [[1, 0], [0, 1], [-1, 0], [0, -1], [-1, -1], [1, -1], [-1, 1], [1, 1]]
 
                     for dirW in directions_w:
                         for d in range(1, int(self.resolution / 2)):
                             weight = 60 / d
-                            if 0 < (a + dirW[0] * d) < (sizeX + 1) and 0 < (b + dirW[1] * d) < (sizeY + 1) \
+                            if 0 < (a + dirW[0] * d) < (sizeY) and 0 < (b + dirW[1] * d) < (sizeX) \
                                     and self.allNodes[(a + dirW[0] * d, b + dirW[1] * d)][7] < weight:
 
                                 self.allNodes[(a + dirW[0] * d, b + dirW[1] * d)][7] = weight
@@ -220,9 +220,9 @@ class Maze:
 
         for dir in directions:
             d += 1
-            nodeX = node[0] + dir[0]
-            nodeY = node[1] + dir[1]
-            neighbor = (nodeX, nodeY)
+            nodeY = node[0] + dir[0]
+            nodeX = node[1] + dir[1]
+            neighbor = (nodeY, nodeX)
 
 
 
@@ -294,25 +294,50 @@ class Maze:
             else:
                 return self.path
 
-    def printLayoutAdvanced(self):
+    def printLayoutAdvanced(self, _type):
         """prints the layout with more infomation, good for debugging.
         Each field is printed as F_XXX_YYY where F is a reference to the function of the cell and 
-        XXX is the Z cordinate and YYY is Y coordinate counting from upper left corner"""
+        XXX is the Z cordinate and YYY is Y coordinate counting from upper left corner
+        type = 0: prints regular layour
+        type = 1: Prints function of cell as well as coordinate"""
         if self.fullLayout == 0:
             return 0
 
-        if self.dimX > 999 or self.dimY >999:
-            print("Dimensions of maze too large for advanced print of layout")
+        if _type==0:
+            self.printLayout()
             return 0
-        print('')
-        for i in range(0,len(self.fullLayout)):
-            printRow = []
-            for j in range(0,len(self.fullLayout[i])):
-                printRow.append(str(self.fullLayout[i][j]) + '_' + format(i,'03d') +'_'+ format(j,'03d'))
-            print(" ".join(printRow))
+
+        if _type==1:
+            if self.dimX > 999 or self.dimY >999:
+                print("Dimensions of maze too large for advanced print of layout")
+                return 0
             print('')
-            print('')
-        return 0
+            for i in range(0,len(self.fullLayout)):
+                printRow = []
+                for j in range(0,len(self.fullLayout[i])):
+                    printRow.append(str(self.fullLayout[i][j]) + '_' + format(i,'03d') +'_'+ format(j,'03d'))
+                print(" ".join(printRow))
+                print('')
+                print('')
+            return 0
+
+        if _type==2:
+            for i in range(0,len(self.fullLayout)):
+                printRow = []
+                for j in range(0, len(self.fullLayout[i])):
+                    element = ' '
+                    if self.fullLayout[i][j] == 0:
+                        element = ' '
+                    elif self.fullLayout[i][j] == 1:
+                        element = 'X'
+                    else:
+                        element = 'O'
+                    if (i,j) in self.path:
+                        element = 'P'
+                    printRow.append(element)
+                " ".join(printRow)
+                print(" ".join(printRow))
+
         
 
     def printLayout(self):
