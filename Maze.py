@@ -23,7 +23,9 @@ class Maze:
         #Refinement of node data 
         self.allNodes = {} #Nodes of the maze containieng all info of each node
         self.target = {} #Exit field
-        
+        self.dimX = len(self.fullLayout) #Dimension of grid in X direction
+        self.dimY = len(self.fullLayout[0]) #Dimension of grid in Y direction
+
         #Parameters for path finding
         self.home = (23, 2) #Location of robot.
         self.openList = []
@@ -172,11 +174,12 @@ class Maze:
     def nodeSetup(self):
 
         # self.fullLayout = self.layoutMaker()
-        size = self.resolution * 3 #TODO: Explain what is 3?
+        sizeX = self.dimX #TODO: Explain what is 3?
+        sizeY = self.dimY
 
         # converting maze array into nodes with cost values and locations
-        for v in range(1, (size + 1)):
-            for u in range(1, (size + 1)):
+        for v in range(1, (sizeY+1)):
+            for u in range(1, (sizeX+1)):
 
                 # [x, y, wall, fcost(total), hcost (heueristic), gcost (movement), parent, weight]
                 self.allNodes[(u, v)] = [u, v, self.fullLayout[v - 1][u - 1], 10000, 0, 0, (0, 0), 0]
@@ -186,8 +189,8 @@ class Maze:
                     self.target = self.allNodes[(u, v)]
 
         # Assigning weights to the node that are close to the walls
-        for b in range(1, size + 1):
-            for a in range(1, size + 1):
+        for b in range(1, sizeY + 1):
+            for a in range(1, sizeX + 1):
 
                 if self.fullLayout[b - 1][a - 1] == 1:
                     directions_w = [[1, 0], [0, 1], [-1, 0], [0, -1], [-1, -1], [1, -1], [-1, 1], [1, 1]]
@@ -195,7 +198,7 @@ class Maze:
                     for dirW in directions_w:
                         for d in range(1, int(self.resolution / 2)):
                             weight = 60 / d
-                            if 0 < (a + dirW[0] * d) < (size + 1) and 0 < (b + dirW[1] * d) < (size + 1) \
+                            if 0 < (a + dirW[0] * d) < (sizeX + 1) and 0 < (b + dirW[1] * d) < (sizeY + 1) \
                                     and self.allNodes[(a + dirW[0] * d, b + dirW[1] * d)][7] < weight:
 
                                 self.allNodes[(a + dirW[0] * d, b + dirW[1] * d)][7] = weight
