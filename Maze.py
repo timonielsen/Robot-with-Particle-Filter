@@ -24,13 +24,13 @@ class Maze:
         self.fullLayout = self.layoutMaker()
 
         #Refinement of node data 
-        self.allNodes = {} #Nodes of the maze containieng all info of each node
+        self.allNodes = {} #Nodes of the maze containieng all info of each node. # [y, x, wall, fcost(total), hcost (heueristic), gcost (movement), parent, weight]
         self.target = {} #Exit field
         self.dimX = len(self.fullLayout[0]) #Dimension of grid in X direction
         self.dimY = len(self.fullLayout) #Dimension of grid in Y direction
 
         #Parameters for path finding
-        self.home = (13, 60) #Location of robot.
+        self.home = (self.dimY/2, self.dimX/2) #Location of robot.
         self.openList = []
         self.closedList = []
         self.check = []
@@ -184,7 +184,7 @@ class Maze:
         for u in range(0, sizeY):
             for v in range(0, sizeX):
 
-                # [x, y, wall, fcost(total), hcost (heueristic), gcost (movement), parent, weight]
+                # [y, x, wall, fcost(total), hcost (heueristic), gcost (movement), parent, weight]
                 self.allNodes[(u, v)] = [u, v, self.fullLayout[u][v], 10000, 0, 0, (0, 0), 0]
 
                 # selecting the target node from array
@@ -299,7 +299,10 @@ class Maze:
         Each field is printed as F_XXX_YYY where F is a reference to the function of the cell and 
         XXX is the Z cordinate and YYY is Y coordinate counting from upper left corner
         type = 0: prints regular layour
-        type = 1: Prints function of cell as well as coordinate"""
+        type = 1: Prints function of cell as well as coordinate
+        type = 2: As type 0 but with path drawn
+        type = 3: Prints weights of fields"""
+
         if self.fullLayout == 0:
             return 0
 
@@ -333,10 +336,21 @@ class Maze:
                     else:
                         element = 'O'
                     if (i,j) in self.path:
-                        element = 'P'
+                        element = '*'
                     printRow.append(element)
                 " ".join(printRow)
                 print(" ".join(printRow))
+
+        if _type==3:
+            for i in range(0,len(self.fullLayout)):
+                printRow = []
+                for j in range(0,len(self.fullLayout[i])):
+                    printRow.append(format(self.allNodes[(i,j)][7],'03d'))
+                print(" ".join(printRow))
+                print('')
+        return 0
+
+
 
         
 

@@ -15,7 +15,7 @@ layout = [['XXOO', 'OXXO', 'OXXO', 'OXXX'],
           ['XOXO', 'OXXO', 'OXXO', 'OXOX'],
           ['XXXO', 'OXXO', 'OXEO', 'OOXX']]
 
-maze = Maze.Maze(layout, 20, 30)
+maze = Maze.Maze(layout, 10, 30)
 robot = Robot.Robot(maze, speedOfRobot, rotSpeedOfRotation) 
 particlefilter = Particlefilter.Particlefilter(particlefilterNoise, noOfParticles, maze)
 
@@ -24,7 +24,7 @@ particlefilter = Particlefilter.Particlefilter(particlefilterNoise, noOfParticle
 
 
 maze.astar()
-maze.printLayoutAdvanced(2)
+maze.printLayoutAdvanced(3)
 '''
 Robot robot
 Particlefilter particlefilter
