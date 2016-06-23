@@ -30,7 +30,7 @@ class Maze:
         self.dimY = len(self.fullLayout) #Dimension of grid in Y direction
 
         #Parameters for path finding
-        self.home = (self.dimY/2, self.dimX/2) #Location of robot.
+        self.home = (5, 50) #Location of robot.
         self.openList = []
         self.closedList = []
         self.check = []
