@@ -11,12 +11,13 @@ class Particlefilter:
 	 	Somehow we need the dimensions of the maze to do this properly"""
 	 	self.particles = []
 	 	for i in range(self.noOfParticles):
-	 		self.particles.append(Particle.Particle(_maze.dimX/2,_maze.dimY/2,0)) #change to some random value
+	 		self.particles.append(Particle.Particle(_maze.dimX/2,_maze.dimY/2,10)) #change to some random value
 
 	 def measure(self):
 	 	"""for each particles calculate the distance to the walls"""
 	 	for i in range(self.noOfParticles):
 	 		self.particles[i].calcDistance(self.maze)
+	 		print(self.particles[i].measurements)
 
 	 def compare(self, _robot):
 	 	"""compare measurements with measurement of robot and update weights"""

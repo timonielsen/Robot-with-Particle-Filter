@@ -19,6 +19,7 @@ class Maze:
         self.layout = _layout #Simple layout of maze, which is translated into a full layout
         self.resolution = _resolution #Resolution with which the full layout will be produced
         self.fieldsize = _fieldsize #Size of each cell in maze. In the competetion case is 30 (cm)
+        self.cellSize = _fieldsize/_resolution
 
         #Refinement of layout
         self.fullLayout = self.layoutMaker()
@@ -30,7 +31,7 @@ class Maze:
         self.dimY = len(self.fullLayout) #Dimension of grid in Y direction
 
         #Parameters for path finding
-        self.home = (5, 50) #Location of robot.
+        self.home = (5, 5) #Location of robot.
         self.openList = []
         self.closedList = []
         self.check = []
@@ -270,7 +271,7 @@ class Maze:
                 if [n[0], n[1]] == [self.target[0], self.target[1]]:
                     print('Path Found')
                     path = self.getPath(n)
-                    print(path)
+                    #print(path)
                     return path
 
                 # else add the new neighbors to the open list
@@ -293,6 +294,8 @@ class Maze:
 
             else:
                 return self.path
+    def printPath(self):
+        print(self.path)
 
     def printLayoutAdvanced(self, _type):
         """prints the layout with more infomation, good for debugging.
@@ -349,6 +352,50 @@ class Maze:
                 print(" ".join(printRow))
                 print('')
         return 0
+
+    def printLayoutAdvancedParticleFilter(self, _particlefilter, _type):
+        """Prints the particles with or without the lines of measurements.
+        type = 4: Without lines
+        type = 5: with lines
+        """
+        if _type == 4:
+            for i in range(0,len(self.fullLayout)):
+                printRow = []
+                for j in range(0, len(self.fullLayout[i])):
+                    element = ' '
+                    if self.fullLayout[i][j] == 0:
+                        element = ' '
+                    elif self.fullLayout[i][j] == 1:
+                        element = 'X'
+                    else:
+                        element = 'O'
+                    for particle in _particlefilter.particles:
+                        if i == particle.y and j == particle.x:
+                            element = 'P'
+                    printRow.append(element)
+                " ".join(printRow)
+                print(" ".join(printRow))
+
+        if _type == 5:
+            for i in range(0,len(self.fullLayout)):
+                printRow = []
+                for j in range(0, len(self.fullLayout[i])):
+                    element = ' '
+                    if self.fullLayout[i][j] == 0:
+                        element = ' '
+                    elif self.fullLayout[i][j] == 1:
+                        element = 'X'
+                    else:
+                        element = 'O'
+                    for particle in _particlefilter.particles:
+                        if i == particle.y and j == particle.x:
+                            element = 'P'
+                        if (i,j) in particle.rayTracedNodes and self.fullLayout[i][j] != 1:
+                            element = '*'
+                    printRow.append(element)
+                " ".join(printRow)
+                print(" ".join(printRow))
+
 
 
 

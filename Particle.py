@@ -9,6 +9,7 @@ class Particle:
 		self.measureMax = 100 #mm - The maximum a robot can measure TODO, make a good way to get this directly from the robot parameters so it's not hardcoded
 		self.measureMin = 0 #mm - The minimum a robot can measure TODO, make a good way to get this directly from the robot parameters so it's not hardcoded
 
+		self.rayTracedNodes = {} #This can be deleted later, and is only uses for DEBUGGING. stores the lines of measurements
 		""" We can always reevaluate number of points for measurements here. 
 		DO NOT MAKE ANY HARD CODED LOOPS AS LENGTH OF ARRAY MAY CHANGE.
 		Weight is related to how well the measurements of a particle corresponds with the measurements of a robot. 
@@ -44,7 +45,7 @@ class Particle:
 
 		nonMetricMeasures = [] #Measures in unit lengths
 		for k in range(0,len(angles)): #For each angle in which the particle measure
-			raytracer = [float(self.x), float(self.y)] #the raytracer is initialsed at the location of the particle
+			raytracer = [float(self.y), float(self.x)] #the raytracer is initialsed at the location of the particle
 
 			intersectionFound = False
 			iterator = 0
@@ -53,7 +54,7 @@ class Particle:
 				raytracer = [raytracer[0] - 0.99*math.sin(angles[k]), raytracer[1] + 0.99*math.cos(angles[k])]
 				i = iround(raytracer[0]) #find which cell is in the point we are analysing
 				j = iround(raytracer[1])
-				
+				self.rayTracedNodes[(i,j)] = (i,j)
 				if i < 0 or i > _maze.dimY-1: #if maze dimensions has been exceeded
 					nonMetricMeasures.append(-1)
 					break
@@ -67,7 +68,7 @@ class Particle:
 					break
 
 				if _maze.fullLayout[i][j] == 1: #if the ray has hit a wall
-					distance = pythagoras(self.x - i, self.y-j) #find the distance to the point or impact
+					distance = pythagoras(self.x - j, self.y-i) #find the distance to the point or impact
 					nonMetricMeasures.append(distance)
 					break
 				iterator += 1

@@ -5,7 +5,7 @@ import Maze
 layout = 0 #probably an int array
 home = 0 #end of maze
 particlefilterNoise = 0 #the noise with which the resampling of points is affected
-noOfParticles = 100 #number of particles in particle filter
+noOfParticles = 1 #number of particles in particle filter
 speedOfRobot = 1
 rotSpeedOfRotation = 1 #how fast the robot rotates
 resolution = 8
@@ -15,7 +15,7 @@ layout = [['XXOO', 'OXXO', 'OXXO', 'OXXX'],
           ['XOXO', 'OXXO', 'OXXO', 'OXOX'],
           ['XXXO', 'OXXO', 'OXEO', 'OOXX']]
 
-maze = Maze.Maze(layout, 50, 30)
+maze = Maze.Maze(layout, 59, 30)
 robot = Robot.Robot(maze, speedOfRobot, rotSpeedOfRotation) 
 particlefilter = Particlefilter.Particlefilter(particlefilterNoise, noOfParticles, maze)
 
@@ -24,7 +24,10 @@ particlefilter = Particlefilter.Particlefilter(particlefilterNoise, noOfParticle
 
 
 maze.astar()
+particlefilter.measure()
+#maze.printPath()
 maze.printLayoutAdvanced(2)
+maze.printLayoutAdvancedParticleFilter(particlefilter,5)
 '''
 Robot robot
 Particlefilter particlefilter
