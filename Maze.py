@@ -201,7 +201,7 @@ class Maze:
 
                     for dirW in directions_w:
                         for d in range(1, int(self.resolution / 2)):
-                            weight = 60 / d
+                            weight = 80 / d
                             if 0 < (a + dirW[0] * d) < (sizeY) and 0 < (b + dirW[1] * d) < (sizeX) \
                                     and self.allNodes[(a + dirW[0] * d, b + dirW[1] * d)][7] < weight:
 
@@ -212,7 +212,7 @@ class Maze:
         self.closedList = []
 
     def neighbors(self, node):
-        # Directions to the neibors of the selected node
+        # Directions to the neighbors of the selected node
         directions = [[1, 0], [0, 1], [-1, 0], [0, -1], [-1, -1], [1, -1], [-1, 1], [1, 1]]
 
         # Empty list for the real neighbors that are inside the maze and are not walls with updated cost values
@@ -221,33 +221,41 @@ class Maze:
 
         for dir in directions:
             d += 1
-            nodeY = node[0] + dir[0]
-            nodeX = node[1] + dir[1]
-            neighbor = (nodeY, nodeX)
-
-
+            nodeX = node[0] + dir[0]
+            nodeY = node[1] + dir[1]
+            neighbor = (nodeX, nodeY)
+            tcost = 60
 
             ''' if the neighboring node is inside the maze and not a wall and the nodes
                 is either unexplored or the new route to the node is cheaper than the existing'''
             if neighbor in self.allNodes and self.allNodes[neighbor][2] != 1:
-                if d <= 4:
+
+                if (node[1] - self.allNodes[tuple(node)][6][1])*neighbor[0] + \
+                                (self.allNodes[tuple(node)][6][1] - neighbor[1])*node[0] + \
+                                (neighbor[1] - node[1])*self.allNodes[tuple(node)][6][0] == 0:
+
+                    tcost = 0
+
+                if d < 5:
                     # Adding 10 movement cost for straights moves + node weight
-                    g = self.allNodes[tuple(node)][5] + 10 + self.allNodes[neighbor][7]
+                    g = self.allNodes[tuple(node)][5] + 10 + self.allNodes[neighbor][7] + tcost
 
-                else:
+                if d > 4:
                     # Adding 14 movement cost for diagonal moves + node weight
-                    g = self.allNodes[tuple(node)][5] + 14 + self.allNodes[neighbor][7]
+                    g = self.allNodes[tuple(node)][5] + 14 + self.allNodes[neighbor][7] + tcost
 
-                if (self.allNodes[neighbor][6] == (0, 0) or g < self.allNodes[neighbor][5]):
+                if self.allNodes[neighbor][6] == (0, 0) or g < self.allNodes[neighbor][5]:
 
                     # update node withe new weights and parents
-                    self.allNodes[neighbor][4] = (round(math.hypot(self.target[0] - neighbor[0], self.target[1] - neighbor[1])) * 10)
+                    self.allNodes[neighbor][4] = (round(math.hypot(self.target[0] - neighbor[0],
+                                                                   self.target[1] - neighbor[1])) * 10)
                     self.allNodes[neighbor][5] = g
                     self.allNodes[neighbor][3] = self.allNodes[neighbor][4] + g
                     self.allNodes[neighbor][6] = node
                     realNeighbor.append(self.allNodes[neighbor])
 
         return realNeighbor
+
 
     def astar(self):
         while self.openList:
