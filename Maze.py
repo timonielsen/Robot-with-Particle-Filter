@@ -14,7 +14,7 @@ class Maze:
         if _resolution <= 0 or _fieldsize <= 0 or _layout == 0:
             print("Error in maze input")
             exit()
-        
+
         #Maze geoemtry and layout
         self.layout = _layout #Simple layout of maze, which is translated into a full layout
         self.resolution = _resolution #Resolution with which the full layout will be produced
@@ -24,7 +24,7 @@ class Maze:
         #Refinement of layout
         self.fullLayout = self.layoutMaker()
 
-        #Refinement of node data 
+        #Refinement of node data
         self.allNodes = {} #Nodes of the maze containieng all info of each node. # [y, x, wall, fcost(total), hcost (heueristic), gcost (movement), parent, weight]
         self.target = {} #Exit field
         self.dimX = len(self.fullLayout[0]) #Dimension of grid in X direction
@@ -307,7 +307,7 @@ class Maze:
 
     def printLayoutAdvanced(self, _type):
         """prints the layout with more infomation, good for debugging.
-        Each field is printed as F_XXX_YYY where F is a reference to the function of the cell and 
+        Each field is printed as F_XXX_YYY where F is a reference to the function of the cell and
         XXX is the Z cordinate and YYY is Y coordinate counting from upper left corner
         type = 0: prints regular layour
         type = 1: Prints function of cell as well as coordinate
@@ -407,13 +407,13 @@ class Maze:
 
 
 
-        
+
 
     def printLayout(self):
         """prints the maze in the console"""
         if self.fullLayout == 0:
             return 0
-    
+
         for row in self.fullLayout:
             printRow = []
             for el in row:

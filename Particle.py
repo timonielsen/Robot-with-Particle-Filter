@@ -1,12 +1,17 @@
 import math
+import numpy as np
+import random
 
 class Particle:
 	def __init__(self, _x, _y, _orientation, ):
 		"""initialise the particle"""
 		self.x = _x #location
 		self.y = _y
+		self.sense_noise = 0.0 		# a particle has the same features with robot like moving forward, rotating
+		self.rotate_noise = 0.0 	# or measuring distances. Therefore, the noise parameters are added for the simplicity of
+		self.forward_noise = 0.0 	# calculations and moving particles.
 		self.orientation = _orientation #orientation of particle [0,2PI]
-		self.measureMax = 100 #mm - The maximum a robot can measure TODO, make a good way to get this directly from the robot parameters so it's not hardcoded
+		self.measureMax = 400 #mm - The maximum a robot can measure TODO, make a good way to get this directly from the robot parameters so it's not hardcoded
 		self.measureMin = 0 #mm - The minimum a robot can measure TODO, make a good way to get this directly from the robot parameters so it's not hardcoded
 
 		self.rayTracedNodes = {} #This can be deleted later, and is only uses for DEBUGGING. stores the lines of measurements
@@ -16,7 +21,7 @@ class Particle:
 		The better match, the higher weight. Note that the resolution has a huge impact on this measure.
 		"""
 
-		self.measurements = [0,0,0,0,0] #calculated distances to nearby walls
+		self.measurements = [0.0,0.0,0.0] #calculated distances to nearby walls
 		self.weight = 1.0; #
 
 	def calcDistance(self, _maze):
@@ -25,7 +30,7 @@ class Particle:
 		"""CAN THIS BE DONE SMARTER?????"""
 		angles = [] #The orientations at which the measurements are carried out
 		maxDist = pythagoras(_maze.dimX, _maze.dimY) * 1.1 #A distance greater than the diagonal of the maze doesn't make sense
-		#TODO update to whatever distance the robot can actually measure. Maybe somehow get it from the robot class. 
+		#TODO update to whatever distance the robot can actually measure. Maybe somehow get it from the robot class.
 
 		"""This loop calculates the angles in which the particle will measure"""
 		for i in range(0,len(self.measurements)):
@@ -37,8 +42,8 @@ class Particle:
 		It's assumed a ray is shot out from the particle location [x,y]. We then simply start considering the node
 		which the particle is and move  by a distance a little smaller than 1.0 along the 'ray'
 		and check what cell we are then in. NOTE: The movement is performed with float and NOT int values.
-		It is then checked whether this cell is a wall or not. If it's a wall the euclidian distance to this wall point 
-		is calculated. This distance can then be converted to an actual length in cm by taking into account the 
+		It is then checked whether this cell is a wall or not. If it's a wall the euclidian distance to this wall point
+		is calculated. This distance can then be converted to an actual length in cm by taking into account the
 		resolution and cell size of the maze
 		Please let me (TIMO) know if this needs further explanation.
 		"""
@@ -64,7 +69,7 @@ class Particle:
 					break
 
 				if iterator >= maxDist: #if we have reached the maxdist which the robot can measure.
-					nonMetricMeasures.append(-1) 
+					nonMetricMeasures.append(-1)
 					break
 
 				if _maze.fullLayout[i][j] == 1: #if the ray has hit a wall
@@ -90,8 +95,44 @@ class Particle:
 	def normalizeWeight(self, _normalisationFactor):
 		"""normalises the weight. The normalisation factor will be calculated
 		in the particlefilter based after a weight has been assigned to each particle"""
+		self.weight = self.weight / float(_normalisationFactor)
 		return 0
 
+	def set_noise(self,_snoise,_fnoise,_rnoise):
+		self.sense_noise = _snoise
+		self.forward_noise = _fnoise
+		self.rotate_noise = _rnoise
+
+	def Gaussian(self, mu, sigma, x):
+		return math.exp(-((mu - x) ** 2) / (sigma ** 2) / 2.0) / math.sqrt(2.0 * math.pi * (sigma ** 2))
+
+	def measure_prob(self, robotdist):
+		## the measurements of robot and the particle is compared according to sense noise and gaussian dist.
+		prob = 1.0
+		for i in range(len(self.measurements)):
+			prob *= self.Gaussian(self.measurements[i], self.sense_noise, robotdist[i])
+		self.weight = prob
+		return prob
+
+	def move(self,_angle,_distance,_maze):
+		newOr = self.orientation + float(_angle) + random.gauss(0.0,(self.rotate_noise/360)*2*math.pi)
+		newOr %= 2*math.pi
+		self.orientation = newOr
+		newdist = float(_distance) + random.gauss(0.0,self.forward_noise)
+		self.x += newdist * math.cos(self.orientation)
+		self.y -= newdist * math.sin(self.orientation)
+		if self.x > _maze.dimX:
+			self.x = _maze.dimX
+		if self.y > _maze.dimY:
+			self.y = _maze.dimY
+		if self.x < 0:
+			self.x = 0.0
+		if self.y < 0:
+			self.y = 0.0
+
+
+	def getStateofParticle(self):
+		return [self.x,self.y,self.orientation]
 
 def normalizeAngle(angle):
     newAngle = angle
