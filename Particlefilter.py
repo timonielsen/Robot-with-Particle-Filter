@@ -103,6 +103,12 @@ class Particlefilter:
 		 turtle.setheading(headingr)
 		 turtle.update()
 
+	 def printMeasures(self):
+		for i in range(self.noOfParticles):
+			print(self.particles[i].measurements)
+
+
+
 
 
 

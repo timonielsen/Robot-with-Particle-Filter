@@ -1,4 +1,12 @@
 import Particle
+connected = True
+try:
+    from gopigo import *
+except ImportError:
+    connected = False
+
+import sys
+import time
 
 class Robot:
     def __init__(self, _maze, _speed, _rotationSpeed): #give it a maze as input!
@@ -32,16 +40,57 @@ class Robot:
 
     
     def move(self, _distance):
-        """Moves the robot. postive values=forward, negative values=backward"""
+        """Moves the robot. postive values=forward, negative values=backward""" 
+        if connected:
+            distance = 35 #cm INPUT
+            speed = 160 #constant
+            unitSpeed = 11.11 #Units/second CONSTANT
+            cmPrUnit = 1.1483 #Constant
+
+            unitDist = int(round(distance/cmPrUnit)) #Be careful with int and doubles
+            sleepTime = unitDist/unitSpeed * 1.3
+
+            set_speed(speed)  
+            enc_tgt(1,1,unitDist)
+            if(_distance > 0):
+                fwd()
+            else:
+                bwd()
+            time.sleep(sleepTime)
         return 0
 
     def rotate(self, _angle):
         """Rotate robot. Be aware of sign of angle. We need to figure out if CW is positive"""
-        return _angle
+        if connected:
+            fullCircle = 32 #units
+            partsOfCircle = 360/_angle #how big a part of a full circle is rotated. eg 90 degrees = 4
+
+            units = int(round(fullCircle/partsOfCircle))
+            set_speed(80)  #DO NOT CHANGS UNLESS NEW TESTS ARE MADE WITH ROBOT TO CHECK HOW MANY UNITS GO TO FULL CIRCLE
+            enc_tgt(1,1,units)
+            right_rot() #Choose whether it should be clockwise or counterclockwise
+
+        return 0
 
     def measure(self): 
         """Updates measurement[] with a series of measurements."""
-        self.measurement = self.simulateMeasurements()
+        if connected:
+            sleepTime = 0.5 #Set time between measures (has to be there for the program to wait with the next command until rotation is done)
+            servo(179)
+            time.sleep(sleepTime)
+            self.measurement[0] = us_dist(15) #Measure
+            time.sleep(sleepTime)
+            servo(90)
+            time.sleep(sleepTime)
+            self.measurement[1] = us_dist(15) #Measure
+            time.sleep(sleepTime)
+            servo(1)
+            time.sleep(sleepTime)
+            self.measurement[2] = us_dist(15) #Measure
+            stop()
+        else:
+            self.measurement = self.simulateMeasurements()
+
         return self.measurement
 
     def updateBelief(self, _particleFilter): #updates x, y and rotation
