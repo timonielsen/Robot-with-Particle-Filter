@@ -30,12 +30,14 @@ maze2 = np.array([  \
 
 print maze2
 
-maze = Maze.Maze(layout, 59, 30)
+maze = Maze.Maze(layout, 53, 30)
 robot = Robot.Robot(maze, speedOfRobot, rotSpeedOfRotation) 
 particlefilter = Particlefilter.Particlefilter(particlefilterNoise, noOfParticles, maze)
 #particlefilter.showParticles()
 
-particlefilter.showParticles(robot.getSimulatedLocation())
+maze.astar()
+#particlefilter.showParticles(robot.getSimulatedLocation())
+'''
 for t in range(T):
     robot.simulateMove(0,5)
     print robot.simulateMeasurements() # it is for simulation of
@@ -45,13 +47,16 @@ for t in range(T):
     particlefilter.resample()
 #print particlefilter.particles[10].x
     particlefilter.showParticles(robot.getSimulatedLocation())
-#maze.astar()
+    '''
+
 #particlefilter.measure()
 #particlefilter.compare(robot)
-time.sleep(15)
+#time.sleep(15)
 #maze.printPath()
-#maze.printLayoutAdvanced(2)
+maze.printLayoutAdvanced(2)
+maze.printLayoutAdvanced(3)
 #maze.printLayoutAdvancedParticleFilter(particlefilter,5)
+
 
 '''
 Robot robot

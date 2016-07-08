@@ -353,10 +353,12 @@ class Maze:
                 print(" ".join(printRow))
 
         if _type==3:
+            print("here")
             for i in range(0,len(self.fullLayout)):
                 printRow = []
                 for j in range(0,len(self.fullLayout[i])):
                     printRow.append(format(self.allNodes[(i,j)][7],'03d'))
+
                 print(" ".join(printRow))
                 print('')
         return 0
