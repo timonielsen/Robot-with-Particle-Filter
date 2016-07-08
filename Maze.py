@@ -185,7 +185,8 @@ class Maze:
 
                     for dirW in directions_w:
                         for d in range(1, int(self.resolution / 2)):
-                            weight = 100 / d
+                            weight = 1000 / d
+                            weight = 1000 / d
                             if 0 < (a + dirW[0] * d) < (sizeX + 1) and 0 < (b + dirW[1] * d) < (sizeY + 1) and \
                                             self.allNodes[(a + dirW[0] * d, b + dirW[1] * d)][7] < weight:
                                 self.allNodes[(a + dirW[0] * d, b + dirW[1] * d)][7] = weight
@@ -196,7 +197,7 @@ class Maze:
 
     def neighbors(self, node):
         # Directions to the neighbors of the selected node
-        directions = [[1, 0], [0, 1], [-1, 0], [0, -1], [-1, -1], [1, -1], [-1, 1], [1, 1]]
+        directions = [[1, 0], [0, 1], [-1, 0], [0, -1]]#, [-1, -1], [1, -1], [-1, 1], [1, 1]]
 
         # Empty list for the real neighbors that are inside the maze and are not walls with updated cost values
         realNeighbor = []
@@ -299,15 +300,11 @@ class Maze:
             " ".join(printRow)
             print(" ".join(printRow))
 
-'''
+
 start = (22, 2)
 resolution = 8
 fieldsize = 30
 
-
-layout = [['XXOO', 'OXXO', 'OXXX'],
-          ['XOXO', 'OXOO', 'OXXX'],
-          ['XXXO', 'OOXO', 'OXEX']]
 
 layout = [['XXOO', 'OXXO', 'OXXO', 'OXXX'],
           ['XOXO', 'OXXO', 'OXXO', 'OXOX'],
@@ -394,4 +391,4 @@ for (x0, y0, x1, y1) in linemaker(mazeWalls7):
 
 root.mainloop()
 
-'''
+
