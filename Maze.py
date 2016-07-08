@@ -378,7 +378,7 @@ class Maze:
                     else:
                         element = 'O'
                     for particle in _particlefilter.particles:
-                        if i == particle.y and j == particle.x:
+                        if i == particle.x and j == particle.y:
                             element = 'P'
                     printRow.append(element)
                 " ".join(printRow)
@@ -396,7 +396,7 @@ class Maze:
                     else:
                         element = 'O'
                     for particle in _particlefilter.particles:
-                        if i == particle.y and j == particle.x:
+                        if i == particle.x and j == particle.y:
                             element = 'P'
                         if (i,j) in particle.rayTracedNodes and self.fullLayout[i][j] != 1:
                             element = '*'

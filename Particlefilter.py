@@ -23,11 +23,14 @@ class Particlefilter:
 	 		self.particles.append(Particle.Particle(init_xcoordinates[i],init_ycoordinates[i],init_angles[i])) #change to some random value
 			self.particles[i].set_noise(1.0,1.0,5.0)
 
+
 	 def measure(self):
 	 	"""for each particles calculate the distance to the walls"""
 	 	for i in range(self.noOfParticles):
 	 		self.particles[i].calcDistance(self.maze)
+
 	 		#print(self.particles[i].measurements)
+
 
 
 	 def compare(self, _robot):
