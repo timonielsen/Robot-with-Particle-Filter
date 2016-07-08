@@ -1,17 +1,22 @@
+import Particle
+
 class Robot:
     def __init__(self, _maze, _speed, _rotationSpeed): #give it a maze as input!
         
         self.maze = _maze
         ###Variables for robot###
-        self.x = 0 #location, initiliased to zero as the robot initialy has no clue where it is
-        self.y = 0
+        self.x = 10.0 #location, initiliased to zero as the robot initialy has no clue where it is
+        self.y = 10.0
         self.orientation = 0 #[0, 2PI]
+        self.pr = Particle.Particle(self.x, self.y, self.orientation) # since we don't have any data for robot, for simulation
+        # robot is defined as particle
+        self.pr.set_noise(1.0, 1.0, 5.0) # these are for movement and sense distribution
         
         self.speed = _speed; #Speed with which the robot moves forwards
         self.rotationSpeed = _rotationSpeed; #
         
         self.movement = [0,0] # stores the last movement [length moved, rotation]
-        self.measurement = [0,0,0,0,0] #we can always re evaluate number of points here. DO NOT MAKE ANY HARD CODED LOOPS.
+        self.measurement = [0.0,0.0,0.0] #we can always re evaluate number of points here. DO NOT MAKE ANY HARD CODED LOOPS.
         
         #The following are hard coded values found from measurements of the precision of robot movement. Length of arrays to be determined
         self.moveVar = [0,0,0,0,0] #variance in distance actually moved
@@ -32,11 +37,12 @@ class Robot:
 
     def rotate(self, _angle):
         """Rotate robot. Be aware of sign of angle. We need to figure out if CW is positive"""
-        return angle
+        return _angle
 
     def measure(self): 
         """Updates measurement[] with a series of measurements."""
-        return 0
+        self.measurement = self.simulateMeasurements()
+        return self.measurement
 
     def updateBelief(self, _particleFilter): #updates x, y and rotation
         """updates x, y and rotation"""
@@ -50,6 +56,18 @@ class Robot:
     def rotateServo(self):
         """this function might just be moved to be a part of the measure() function.""" 
         return 0
+
+    def simulateMeasurements(self):
+        self.pr.calcDistance(self.maze)
+        return self.pr.measurements
+
+    def simulateMove(self,_angle,_distance):
+        self.pr.move(_angle,_distance,self.maze)
+        return 0
+
+    def getSimulatedLocation(self):
+        return self.pr.getStateofParticle()
+
 
 
 
