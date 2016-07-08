@@ -300,7 +300,7 @@ class Maze:
             " ".join(printRow)
             print(" ".join(printRow))
 
-
+'''
 start = (22, 2)
 resolution = 8
 fieldsize = 30
@@ -314,7 +314,7 @@ layout = [['XXOO', 'OXXO', 'OXXO', 'OXXX'],
 
 newMaze = Maze(start, layout, resolution, fieldsize)
 newMaze.astar()
-newMaze.printLayout()
+newMaze.printprintLayout()
 print(newMaze.target)
 
 # Figure Drawing
@@ -390,5 +390,4 @@ for (x0, y0, x1, y1) in linemaker(mazeWalls7):
     cv.create_line(x0, y0, x1, y1, width=1, fill="black")
 
 root.mainloop()
-
-
+'''
