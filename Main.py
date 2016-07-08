@@ -14,6 +14,7 @@ resolution = 8
 fieldSize = 30
 T = 1
 
+
 layout = [['XXOO', 'OXXO', 'OXXO', 'OXXX'],
           ['XOXO', 'OXXO', 'OXXO', 'OXOX'],
           ['XXXO', 'OXXO', 'OXEO', 'OOXX']]
