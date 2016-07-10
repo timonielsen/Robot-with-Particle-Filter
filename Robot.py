@@ -16,8 +16,8 @@ class Robot:
         
         self.maze = _maze
         ###Variables for robot###
-        self.x = 30.0 #location, initiliased to zero as the robot initialy has no clue where it is
-        self.y = 30.0
+        self.x = 13.0 #location, initiliased to zero as the robot initialy has no clue where it is
+        self.y = 15.0
         self.orientation = 0.6*(math.pi/2) #[0, 2PI]
         self.pr = Particle.Particle(self.x, self.y, self.orientation) # since we don't have any data for robot, for simulation
         # robot is defined as particle
@@ -42,7 +42,15 @@ class Robot:
         self.measurementLimLow = 0
 
     
-    def move(self, _distance):
+
+    def move(self, ):
+        if connected:
+            return 0
+        else:
+            self.simulateMove(self.movement[1],self.movement[0])
+            return 0
+
+    def drive(self, _distance):
         """Moves the robot. postive values=forward, negative values=backward"""
         if connected:
             distance = 35 #cm INPUT
@@ -93,7 +101,7 @@ class Robot:
             stop()
         else:
             self.measurement = self.simulateMeasurements()
-        return 0
+        return self.measurement
 
     def updateBelief(self, _particleFilter): #updates x, y and rotation
         """updates x, y and rotation"""
@@ -114,31 +122,40 @@ class Robot:
 
     def simulateMove(self,_angle,_distance):
         self.pr.move(_angle,_distance,self.maze)
+        self.x = self.pr.x
+        self.y = self.pr.y
         return 0
 
     def getSimulatedLocation(self):
         return self.pr.getStateofParticle()
 
-    def followPath(self, _distance, _maze):
+    def calculateMovementOnPath(self, _distance, _maze):
         path = _maze.path
         cellsToTravel = int(_distance/_maze.cellSize)
 
-        startcellY = _maze.allNodes[path[len(path)-1]][0]
-        startcellX = _maze.allNodes[path[len(path)-1]][1]
-        if cellsToTravel > len(path):
-            endCellY = _maze.allNodes[0][0]
-            endCellX = _maze.allNodes[0][1]
-        else:
-            endCellY =  _maze.allNodes[path[len(path)-cellsToTravel]][0]
-            endCellX =  _maze.allNodes[path[len(path)-cellsToTravel]][1]
+        startcellY = int(_maze.allNodes[path[len(path)-1]][0])
+        startcellX = int(_maze.allNodes[path[len(path)-1]][1])
+        
 
-        xDist = endCellY - startcellY
+        if cellsToTravel > len(path):
+            endCellY = int(_maze.allNodes[0][0])
+            endCellX = int(_maze.allNodes[0][1])
+        else:
+            endCellY =  int(_maze.allNodes[path[len(path)-cellsToTravel]][0])
+            endCellX =  int(_maze.allNodes[path[len(path)-cellsToTravel]][1])
+
+        xDist = endCellX - startcellX
         yDist = endCellY - startcellY
 
         distance = pythagoras(endCellX-startcellX, endCellY-startcellY)
-        orientation = math.arcsin((endCellY-startcellY)/)
+        orientation = math.atan2(yDist,xDist)
 
+        rotation = - orientation + self.orientation
+        self.movement = [distance,rotation]
+        
         return 0
+
+
 
 def pythagoras(length1, length2):
     """caulcates the hypothenuse length of a diagonal of a right angled triangle"""

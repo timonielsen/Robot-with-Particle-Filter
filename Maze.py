@@ -32,7 +32,7 @@ class Maze:
         self.wallCoor = []
 
         #Parameters for path finding
-        self.home = (5, 5) #Location of robot.
+        self.home = (0, 0) #Location of robot.
         self.openList = []
         self.closedList = []
         self.check = []
@@ -290,6 +290,13 @@ class Maze:
             self.closedList.append(self.check)
 
         print('No Path found')
+
+    def update(self, _loc):
+        self.home = _loc
+        self.openList = [self.allNodes[self.home]]
+        self.closedList = []
+        self.path = []
+        self.nodeSetup()
 
     def getPath(self, finish):
         """Finding the path from the target to the starting node by going back through the parents of each node"""
