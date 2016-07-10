@@ -1,16 +1,48 @@
-'''Test for robot'''
+import Robot
+import Particlefilter
+import Maze
+import time
+import numpy as np
+import math
 
-connected = True
-try:
-    from gopigo import *
-except ImportError:
-    connected = False
+import Robot
+import Particlefilter
+import Maze
+import time
+import numpy as np
 
-import sys
+layout = 0 #probably an int array
+home = 0 #end of maze
+particlefilterNoise = 0 #the noise with which the resampling of points is affected
+noOfParticles = 1 #number of particles in particle filter
+speedOfRobot = 1
+rotSpeedOfRotation = 1 #how fast the robot rotates
+resolution = 60
+fieldSize = 30
+T = 1
 
-servo(0)
-print(us_dist(15))
-servo(90)
-print(us_dist(15))
-servo(180)
-print(us_dist(15))
+
+layout = [['XXOO', 'OXXO', 'OXXO', 'OXXX'],
+          ['XOXO', 'OXXO', 'OXXO', 'OXOX'],
+          ['XXXO', 'OXXO', 'OXEO', 'OOXX']]
+
+maze2 = np.array([  \
+                  [1, 1, 1, 1, 1, 1, 1], \
+                  [1, 0, 0, 0, 0, 0, 1], \
+                  [1, 0, 1, 1, 1, 1, 1], \
+                  [1, 0, 0, 0, 0, 0, 1], \
+                  [1, 1, 1, 0, 1, 1, 1], \
+                  [1, 0, 0, 0, 0, 0, 1], \
+                  [1, 1, 1, 1, 1, 0, 1]])
+
+print maze2
+
+maze = Maze.Maze(layout, resolution, fieldSize)
+robot = Robot.Robot(maze, speedOfRobot, rotSpeedOfRotation) 
+particlefilter = Particlefilter.Particlefilter(particlefilterNoise, noOfParticles, maze)
+maze.astar()
+
+robot.rotate(math.pi)
+robot.move(10)
+robot.rotate(math.pi)
+robot.move(10)

@@ -37,7 +37,16 @@ class Robot:
 
     def rotate(self, _angle):
         """Rotate robot. Be aware of sign of angle. We need to figure out if CW is positive"""
-        return _angle
+        if connected:
+            fullCircle = 32 #units
+            partsOfCircle = math.pi*2/_angle #how big a part of a full circle is rotated. eg 90 degrees = 4
+
+            units = int(round(fullCircle/partsOfCircle))
+            set_speed(80)  #DO NOT CHANGS UNLESS NEW TESTS ARE MADE WITH ROBOT TO CHECK HOW MANY UNITS GO TO FULL CIRCLE
+            enc_tgt(1,1,units)
+            right_rot() #Choose whether it should be clockwise or counterclockwise
+
+        return 0
 
     def measure(self): 
         """Updates measurement[] with a series of measurements."""
