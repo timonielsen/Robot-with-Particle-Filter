@@ -10,7 +10,7 @@ particlefilterNoise = 0 #the noise with which the resampling of points is affect
 noOfParticles = 1 #number of particles in particle filter
 speedOfRobot = 1
 rotSpeedOfRotation = 1 #how fast the robot rotates
-resolution = 8
+resolution = 60
 fieldSize = 30
 T = 1
 
@@ -30,7 +30,7 @@ maze2 = np.array([  \
 
 print maze2
 
-maze = Maze.Maze(layout, 39, 30)
+maze = Maze.Maze(layout, resolution, fieldSize)
 robot = Robot.Robot(maze, speedOfRobot, rotSpeedOfRotation) 
 particlefilter = Particlefilter.Particlefilter(particlefilterNoise, noOfParticles, maze)
 #particlefilter.showParticles()
@@ -55,7 +55,8 @@ particlefilter.printMeasures()
 #time.sleep(15)
 #maze.printPath()
 maze.printLayoutAdvanced(2)
-maze.printLayoutAdvancedParticleFilter(particlefilter,5)
+#maze.printLayoutAdvanced(3)
+#maze.printLayoutAdvancedParticleFilter(particlefilter,5)
 
 
 '''

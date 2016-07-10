@@ -8,17 +8,30 @@ except ImportError:
 import math
 
 class Maze:
-    def __init__(self, _start, _layout, _resolution, _fieldsize):
-        self.check = []
-        self.path = []
-        self.home = _start
-        self.allNodes = {}
-        self.layout = _layout
-        self.resolution = _resolution
-        self.fieldsize = _fieldsize
-        self.allnodes = {}
-        self.target = {}
-        self.fullLayout = []
+    def __init__(self, _layout, _resolution, _fieldsize):
+        """Initiliases the maze"""
+        if _resolution <= 0 or _fieldsize <= 0 or _layout == 0:
+            print("Error in maze input")
+            exit()
+
+        #Maze geoemtry and layout
+        self.layout = _layout #Simple layout of maze, which is translated into a full layout
+        self.resolution = _resolution #Resolution with which the full layout will be produced
+        self.fieldsize = _fieldsize #Size of each cell in maze. In the competetion case is 30 (cm)
+        self.cellSize = _fieldsize/_resolution
+
+        #Refinement of layout
+        self.fullLayout = self.layoutMaker()
+
+        #Refinement of node data
+        self.allNodes = {} #Nodes of the maze containieng all info of each node. # [y, x, wall, fcost(total), hcost (heueristic), gcost (movement), parent, weight]
+        self.target = {} #Exit field
+        self.dimX = len(self.fullLayout[0]) #Dimension of grid in X direction
+        self.dimY = len(self.fullLayout) #Dimension of grid in Y direction
+
+        #Parameters for path finding
+        self.home = (50, 50) #Location of robot.
+
         self.openList = []
         self.closedList = []
         self.fullLayout = self.layoutMaker()
@@ -185,10 +198,11 @@ class Maze:
 
                     for dirW in directions_w:
                         for d in range(1, int(self.resolution / 2)):
-                            weight = 1000 / d
-                            weight = 1000 / d
-                            if 0 < (a + dirW[0] * d) < (sizeX + 1) and 0 < (b + dirW[1] * d) < (sizeY + 1) and \
-                                            self.allNodes[(a + dirW[0] * d, b + dirW[1] * d)][7] < weight:
+                            weight = self.resolution*100 / d
+                            if 0 < (a + dirW[0] * d) < (sizeY) and 0 < (b + dirW[1] * d) < (sizeX) \
+                                    and self.allNodes[(a + dirW[0] * d, b + dirW[1] * d)][7] < weight:
+
+
                                 self.allNodes[(a + dirW[0] * d, b + dirW[1] * d)][7] = weight
 
         # starting the open and closed list for A*
@@ -282,6 +296,111 @@ class Maze:
 
             else:
                 return self.path
+
+    def printPath(self):
+        print(self.path)
+
+    def printLayoutAdvanced(self, _type):
+        """prints the layout with more infomation, good for debugging.
+        Each field is printed as F_XXX_YYY where F is a reference to the function of the cell and
+        XXX is the Z cordinate and YYY is Y coordinate counting from upper left corner
+        type = 0: prints regular layour
+        type = 1: Prints function of cell as well as coordinate
+        type = 2: As type 0 but with path drawn
+        type = 3: Prints weights of fields"""
+
+        if self.fullLayout == 0:
+            return 0
+
+        if _type==0:
+            self.printLayout()
+            return 0
+
+        if _type==1:
+            if self.dimX > 999 or self.dimY >999:
+                print("Dimensions of maze too large for advanced print of layout")
+                return 0
+            print('')
+            for i in range(0,len(self.fullLayout)):
+                printRow = []
+                for j in range(0,len(self.fullLayout[i])):
+                    printRow.append(str(self.fullLayout[i][j]) + '_' + format(i,'03d') +'_'+ format(j,'03d'))
+                print(" ".join(printRow))
+                print('')
+                print('')
+            return 0
+
+        if _type==2:
+            for i in range(0,len(self.fullLayout)):
+                printRow = []
+                for j in range(0, len(self.fullLayout[i])):
+                    element = ' '
+                    if self.fullLayout[i][j] == 0:
+                        element = ' '
+                    elif self.fullLayout[i][j] == 1:
+                        element = 'X'
+                    else:
+                        element = 'O'
+                    if (i,j) in self.path:
+                        element = '*'
+                    printRow.append(element)
+                " ".join(printRow)
+                print(" ".join(printRow))
+
+        if _type==3:
+            print("here")
+            for i in range(0,len(self.fullLayout)):
+                printRow = []
+                for j in range(0,len(self.fullLayout[i])):
+                    printRow.append(format(self.allNodes[(i,j)][7],'04d'))
+
+                print(" ".join(printRow))
+                print('')
+        return 0
+
+    def printLayoutAdvancedParticleFilter(self, _particlefilter, _type):
+        """Prints the particles with or without the lines of measurements.
+        type = 4: Without lines
+        type = 5: with lines
+        """
+        if _type == 4:
+            for i in range(0,len(self.fullLayout)):
+                printRow = []
+                for j in range(0, len(self.fullLayout[i])):
+                    element = ' '
+                    if self.fullLayout[i][j] == 0:
+                        element = ' '
+                    elif self.fullLayout[i][j] == 1:
+                        element = 'X'
+                    else:
+                        element = 'O'
+                    for particle in _particlefilter.particles:
+                        if i == particle.x and j == particle.y:
+                            element = 'P'
+                    printRow.append(element)
+                " ".join(printRow)
+                print(" ".join(printRow))
+
+        if _type == 5:
+            for i in range(0,len(self.fullLayout)):
+                printRow = []
+                for j in range(0, len(self.fullLayout[i])):
+                    element = ' '
+                    if self.fullLayout[i][j] == 0:
+                        element = ' '
+                    elif self.fullLayout[i][j] == 1:
+                        element = 'X'
+                    else:
+                        element = 'O'
+                    for particle in _particlefilter.particles:
+                        if i == particle.x and j == particle.y:
+                            element = 'P'
+                        if (i,j) in particle.rayTracedNodes and self.fullLayout[i][j] != 1:
+                            element = '*'
+                    printRow.append(element)
+                " ".join(printRow)
+                print(" ".join(printRow))
+
 
     def printLayout(self):
         """prints the maze in the console"""

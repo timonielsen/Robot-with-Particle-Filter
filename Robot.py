@@ -8,6 +8,15 @@ except ImportError:
 import sys
 import time
 
+connected = True
+try:
+    from gopigo import *
+except ImportError:
+    connected = False
+
+import sys
+import time
+
 class Robot:
     def __init__(self, _maze, _speed, _rotationSpeed): #give it a maze as input!
         
@@ -40,7 +49,7 @@ class Robot:
 
     
     def move(self, _distance):
-        """Moves the robot. postive values=forward, negative values=backward""" 
+        """Moves the robot. postive values=forward, negative values=backward"""
         if connected:
             distance = 35 #cm INPUT
             speed = 160 #constant
@@ -90,8 +99,8 @@ class Robot:
             stop()
         else:
             self.measurement = self.simulateMeasurements()
+        return 0
 
-        return self.measurement
 
     def updateBelief(self, _particleFilter): #updates x, y and rotation
         """updates x, y and rotation"""
