@@ -225,7 +225,7 @@ class Maze:
             nodeX = node[0] + dir[0]
             nodeY = node[1] + dir[1]
             neighbor = (nodeX, nodeY)
-            tcost = 60
+            tcost = 1000
 
             ''' if the neighboring node is inside the maze and not a wall and the nodes
                 is either unexplored or the new route to the node is cheaper than the existing'''
