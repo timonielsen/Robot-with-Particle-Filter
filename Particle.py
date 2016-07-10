@@ -121,9 +121,9 @@ class Particle:
 		newOr = self.orientation + float(_angle) + 0.2*random.gauss(0.0,(self.rotate_noise/360)*2*math.pi)
 		newOr %= 2*math.pi
 		self.orientation = newOr
-		newdist = float(_distance)
-		self.x += newdist * math.cos(self.orientation)
-		self.y -= newdist * math.sin(self.orientation)
+		newdist = -float(_distance)
+		self.x -= newdist * math.sin(self.orientation)
+		self.y -= newdist * math.cos(self.orientation)
 		if self.x >= _maze.dimX:
 			self.x = _maze.dimX-1
 		if self.y >= _maze.dimY:

@@ -202,7 +202,7 @@ class Maze:
 
                     for dirW in directions_w:
                         for d in range(1, int(self.resolution / 2)):
-                            weight = self.resolution*100 / d
+                            weight = self.resolution*1000 / d
                             if 0 < (a + dirW[0] * d) < (sizeY) and 0 < (b + dirW[1] * d) < (sizeX) \
                                     and self.allNodes[(a + dirW[0] * d, b + dirW[1] * d)][7] < weight:
 

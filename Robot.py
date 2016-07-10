@@ -121,9 +121,13 @@ class Robot:
         return self.pr.measurements
 
     def simulateMove(self,_angle,_distance):
+        print(self.pr.x)
         self.pr.move(_angle,_distance,self.maze)
-        self.x = self.pr.x
-        self.y = self.pr.y
+        self.x = int(round(self.pr.x))
+        self.y = int(round(self.pr.y))
+        self.orientation = self.pr.orientation
+        print(self.pr.x)
+        print("done here")
         return 0
 
     def getSimulatedLocation(self):
@@ -138,8 +142,8 @@ class Robot:
         
 
         if cellsToTravel > len(path):
-            endCellY = int(_maze.allNodes[0][0])
-            endCellX = int(_maze.allNodes[0][1])
+            endCellY = int(_maze.allNodes[path[0]][0])
+            endCellX = int(_maze.allNodes[path[0]][1])
         else:
             endCellY =  int(_maze.allNodes[path[len(path)-cellsToTravel]][0])
             endCellX =  int(_maze.allNodes[path[len(path)-cellsToTravel]][1])
@@ -150,7 +154,7 @@ class Robot:
         distance = pythagoras(endCellX-startcellX, endCellY-startcellY)
         orientation = math.atan2(yDist,xDist)
 
-        rotation = - orientation + self.orientation
+        rotation = orientation - self.orientation
         self.movement = [distance,rotation]
         
         return 0
