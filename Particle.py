@@ -166,10 +166,10 @@ class Particle:
 		return self.weight2
 
 	def add_noise(self,_dimX,_dimY):
-		self.x = self.x + 0.5*random.gauss(0.0, self.forward_noise)
+		self.x = self.x + random.gauss(0.0, self.forward_noise)
 		if self.x >= _dimX:
 			self.x = _dimX - 1
-		self.y = self.y + 0.5*random.gauss(0.0, self.forward_noise)
+		self.y = self.y + random.gauss(0.0, self.forward_noise)
 		if self.y >= _dimY:
 			self.y = _dimY - 1
 		if self.x < 0:

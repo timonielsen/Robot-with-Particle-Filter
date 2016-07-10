@@ -1,4 +1,5 @@
 import Particle
+import math
 
 class Robot:
     def __init__(self, _maze, _speed, _rotationSpeed): #give it a maze as input!
@@ -7,7 +8,7 @@ class Robot:
         ###Variables for robot###
         self.x = 30.0 #location, initiliased to zero as the robot initialy has no clue where it is
         self.y = 30.0
-        self.orientation = 0 #[0, 2PI]
+        self.orientation = 0.6*(math.pi/2) #[0, 2PI]
         self.pr = Particle.Particle(self.x, self.y, self.orientation) # since we don't have any data for robot, for simulation
         # robot is defined as particle
         self.pr.set_noise(5.0, 1.0, 1.0) # these are for movement and sense distribution

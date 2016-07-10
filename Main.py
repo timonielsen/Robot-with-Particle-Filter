@@ -12,7 +12,7 @@ speedOfRobot = 1
 rotSpeedOfRotation = 1 #how fast the robot rotates
 resolution = 60
 fieldSize = 30
-T = 4
+T = 10
 
 layout = [['XXOO', 'OXXO', 'OXXX'],
                   ['XOXO', 'OXXO', 'OXOX'],
@@ -38,21 +38,20 @@ particlefilter = Particlefilter.Particlefilter(particlefilterNoise, noOfParticle
 particlefilter.showParticles(robot.getSimulatedLocation())
 for t in range(T):
     robot.simulateMove(0,5)
-    print robot.simulateMeasurements() # it is for simulation of
-    particlefilter.showParticles(robot.getSimulatedLocation())
-    print("BP1")
-    print particlefilter.particles[5].x
+    # print robot.simulateMeasurements() # it is for simulation of
+    # print robot.pr.orientation
+    #particlefilter.showParticles(robot.getSimulatedLocation())
+    # print("BP1")
+    # print particlefilter.particles[5].x
     particlefilter.updateLocation(0.0,5.0)
-    print("BP2")
-    print particlefilter.particles[5].x
-    particlefilter.showParticles(robot.getSimulatedLocation())
+    # print("BP2")
+    # print particlefilter.particles[5].x
+    #particlefilter.showParticles(robot.getSimulatedLocation())
     particlefilter.compare(robot)
-    #particlefilter.normalize_weights()
+    particlefilter.normalize_weights()
     particlefilter.resample()
-    particlefilter.reset_particles()
 #print particlefilter.particles[10].x
     particlefilter.showParticles(robot.getSimulatedLocation())
-    time.sleep(5)
 
     #time.sleep(15)
 #maze.astar()
