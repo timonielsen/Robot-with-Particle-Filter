@@ -1,4 +1,12 @@
 import Particle
+connected = True
+try:
+    from gopigo import *
+except ImportError:
+    connected = False
+
+import sys
+import time
 
 connected = True
 try:
@@ -92,6 +100,7 @@ class Robot:
         else:
             self.measurement = self.simulateMeasurements()
         return 0
+
 
     def updateBelief(self, _particleFilter): #updates x, y and rotation
         """updates x, y and rotation"""
