@@ -60,7 +60,7 @@ for t in range(T):
 #particlefilter.compare(robot)
 time.sleep(15)
 #maze.printPath()
-#maze.printLayoutAdvanced(2)
+maze.printLayoutAdvanced(2)
 #maze.printLayoutAdvancedParticleFilter(particlefilter,5)
 '''
 Robot robot
