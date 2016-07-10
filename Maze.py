@@ -30,11 +30,11 @@ class Maze:
         self.dimY = len(self.fullLayout) #Dimension of grid in Y direction
 
         #Parameters for path finding
-        self.home = (50, 50) #Location of robot.
-
+        self.home = (5, 5) #Location of robot.
         self.openList = []
         self.closedList = []
-        self.fullLayout = self.layoutMaker()
+        self.check = []
+        self.path = [] #The path from location of robot to the exit
         self.nodeSetup()
 
     def layoutMaker(self):
@@ -175,25 +175,26 @@ class Maze:
 
     def nodeSetup(self):
 
-        sizeX = self.resolution * len(self.layout[0])
-        sizeY = self.resolution * len(self.layout)
+        # self.fullLayout = self.layoutMaker()
+        sizeX = self.dimX #TODO: Explain what is 3?
+        sizeY = self.dimY
 
         # converting maze array into nodes with cost values and locations
-        for v in range(1, (sizeY + 1)):
-            for u in range(1, (sizeX + 1)):
+        for u in range(0, sizeY):
+            for v in range(0, sizeX):
 
-                # [x, y, wall, fcost(total), hcost (heueristic), gcost (movement), parent, weight]
-                self.allNodes[(u, v)] = [u, v, self.fullLayout[v - 1][u - 1], 10000, 0, 0, (0, 0), 0]
+                # [y, x, wall, fcost(total), hcost (heueristic), gcost (movement), parent, weight]
+                self.allNodes[(u, v)] = [u, v, self.fullLayout[u][v], 10000, 0, 0, (0, 0), 0]
 
                 # selecting the target node from array
-                if self.fullLayout[v - 1][u - 1] == 2:
+                if self.fullLayout[u][v] == 2:
                     self.target = self.allNodes[(u, v)]
 
         # Assigning weights to the node that are close to the walls
-        for b in range(1, sizeY + 1):
-            for a in range(1, sizeX + 1):
+        for a in range(0, sizeY):
+            for b in range(0, sizeX):
 
-                if self.fullLayout[b - 1][a - 1] == 1:
+                if self.fullLayout[a][b] == 1:
                     directions_w = [[1, 0], [0, 1], [-1, 0], [0, -1], [-1, -1], [1, -1], [-1, 1], [1, 1]]
 
                     for dirW in directions_w:
@@ -201,7 +202,6 @@ class Maze:
                             weight = self.resolution*100 / d
                             if 0 < (a + dirW[0] * d) < (sizeY) and 0 < (b + dirW[1] * d) < (sizeX) \
                                     and self.allNodes[(a + dirW[0] * d, b + dirW[1] * d)][7] < weight:
-
 
                                 self.allNodes[(a + dirW[0] * d, b + dirW[1] * d)][7] = weight
 
