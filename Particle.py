@@ -22,7 +22,9 @@ class Particle:
 		"""
 
 		self.measurements = [0.0,0.0,0.0] #calculated distances to nearby walls
-		self.weight = 1.0; #
+		self.manhattanDist = [0.0,0.0,0.0,0.0]
+		self.weight = 1.0 #
+		self.weight2 = 1.0
 
 	def calcDistance(self, _maze):
 		"""calculates distance to nearby walls and updates measurements[]"""
@@ -96,6 +98,7 @@ class Particle:
 		"""normalises the weight. The normalisation factor will be calculated
 		in the particlefilter based after a weight has been assigned to each particle"""
 		self.weight = self.weight / float(_normalisationFactor)
+		self.weight2 = self.weight2 / float(_normalisationFactor)
 		return 0
 
 	def set_noise(self,_snoise,_fnoise,_rnoise):
@@ -115,24 +118,65 @@ class Particle:
 		return prob
 
 	def move(self,_angle,_distance,_maze):
-		newOr = self.orientation + float(_angle) + random.gauss(0.0,(self.rotate_noise/360)*2*math.pi)
+		newOr = self.orientation + float(_angle) + 0.2*random.gauss(0.0,(self.rotate_noise/360)*2*math.pi)
 		newOr %= 2*math.pi
 		self.orientation = newOr
-		newdist = float(_distance) + random.gauss(0.0,self.forward_noise)
+		newdist = float(_distance)
 		self.x += newdist * math.cos(self.orientation)
 		self.y -= newdist * math.sin(self.orientation)
-		if self.x > _maze.dimX:
-			self.x = _maze.dimX
-		if self.y > _maze.dimY:
-			self.y = _maze.dimY
+		if self.x >= _maze.dimX:
+			self.x = _maze.dimX-1
+		if self.y >= _maze.dimY:
+			self.y = _maze.dimY-1
 		if self.x < 0:
 			self.x = 0.0
 		if self.y < 0:
 			self.y = 0.0
+		return 0
 
 
 	def getStateofParticle(self):
 		return [self.x,self.y,self.orientation]
+
+	def calcDistance2(self,_maze):
+		cellx = int(self.x/_maze.resolution)
+		celly = int(self.y/_maze.resolution)
+		j = cellx
+		i = celly
+		while _maze.layout[i][j][0] == '0':
+			j -= 1
+		self.manhattanDist[0] = self.x - (j)*_maze.resolution
+		while _maze.layout[i][j][3] == '0':
+			j += 1
+		self.manhattanDist[2] = (_maze.dimX - self.x-1) - (2-j) * _maze.resolution
+		while _maze.layout[i][j][1] == '0':
+			i -= 1
+		self.manhattanDist[1] = self.y - i * _maze.resolution
+		while _maze.layout[i][j][2] == '0':
+			i += 1
+		self.manhattanDist[3] = (_maze.dimY - self.y-1) - (2 - i) * _maze.resolution
+		return 0
+
+	def measure_prob2(self,robotDist):
+		prob = [1.0,1.0,1.0,1.0]
+		for j in range(len(prob)):
+			for i in range(len(robotDist)):
+				prob[j] *= self.Gaussian(self.manhattanDist[(j+i)%len(prob)], self.sense_noise, robotDist[i])
+		self.weight2 = max(prob)
+		return self.weight2
+
+	def add_noise(self,_dimX,_dimY):
+		self.x = self.x + 0.5*random.gauss(0.0, self.forward_noise)
+		if self.x >= _dimX:
+			self.x = _dimX - 1
+		self.y = self.y + 0.5*random.gauss(0.0, self.forward_noise)
+		if self.y >= _dimY:
+			self.y = _dimY - 1
+		if self.x < 0:
+			self.x = 0.0
+		if self.y < 0:
+			self.y = 0.0
+		#self.orientation = (self.orientation + random.gauss(0.0, (self.rotate_noise / 360) * 2 * math.pi)) % (2 * math.pi)
 
 def normalizeAngle(angle):
     newAngle = angle

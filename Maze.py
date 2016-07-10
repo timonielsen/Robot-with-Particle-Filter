@@ -1,11 +1,12 @@
 from operator import itemgetter
 try:
     # for Python2
-    import Tkinter as tk   ## notice capitalized T in Tkinter
+    import Tkinter as tk   ## notice capitalized T in Tkinter 
 except ImportError:
     # for Python3
     import tkinter as tk   ## notice here too
 import math
+
 
 class Maze:
     def __init__(self, _layout, _resolution, _fieldsize):
@@ -28,6 +29,7 @@ class Maze:
         self.target = {} #Exit field
         self.dimX = len(self.fullLayout[0]) #Dimension of grid in X direction
         self.dimY = len(self.fullLayout) #Dimension of grid in Y direction
+        self.wallCoor = []
 
         #Parameters for path finding
         self.home = (5, 5) #Location of robot.
@@ -41,6 +43,7 @@ class Maze:
         """ Buid a layout from a very simple layout. The layout must be rectangular!!!
         Each cell is a four char string where each char tells wether there is a wall next to cell.
         The count is Left-Up-Down-Right. EG. XXOO is a cell with walls to at left and up. E is a reference to where the exit is:
+
         layout = [['XXOO', 'OXXO', 'OXXX'],
                   ['XOXO', 'OXXO', 'OXOX'],
                   ['XXXO', 'OXXO', 'OOEX']]
@@ -199,7 +202,7 @@ class Maze:
 
                     for dirW in directions_w:
                         for d in range(1, int(self.resolution / 2)):
-                            weight = self.resolution*100 / d
+                            weight = 80 / d
                             if 0 < (a + dirW[0] * d) < (sizeY) and 0 < (b + dirW[1] * d) < (sizeX) \
                                     and self.allNodes[(a + dirW[0] * d, b + dirW[1] * d)][7] < weight:
 
@@ -211,7 +214,7 @@ class Maze:
 
     def neighbors(self, node):
         # Directions to the neighbors of the selected node
-        directions = [[1, 0], [0, 1], [-1, 0], [0, -1]]#, [-1, -1], [1, -1], [-1, 1], [1, 1]]
+        directions = [[1, 0], [0, 1], [-1, 0], [0, -1], [-1, -1], [1, -1], [-1, 1], [1, 1]]
 
         # Empty list for the real neighbors that are inside the maze and are not walls with updated cost values
         realNeighbor = []
@@ -228,9 +231,10 @@ class Maze:
                 is either unexplored or the new route to the node is cheaper than the existing'''
             if neighbor in self.allNodes and self.allNodes[neighbor][2] != 1:
 
-                if (node[1] - self.allNodes[tuple(node)][6][1]) * neighbor[0] + \
-                                (self.allNodes[tuple(node)][6][1] - neighbor[1]) * node[0] + \
-                                (neighbor[1] - node[1]) * self.allNodes[tuple(node)][6][0] == 0:
+                if (node[1] - self.allNodes[tuple(node)][6][1])*neighbor[0] + \
+                                (self.allNodes[tuple(node)][6][1] - neighbor[1])*node[0] + \
+                                (neighbor[1] - node[1])*self.allNodes[tuple(node)][6][0] == 0:
+
                     tcost = 0
 
                 if d < 5:
@@ -242,6 +246,7 @@ class Maze:
                     g = self.allNodes[tuple(node)][5] + 14 + self.allNodes[neighbor][7] + tcost
 
                 if self.allNodes[neighbor][6] == (0, 0) or g < self.allNodes[neighbor][5]:
+
                     # update node withe new weights and parents
                     self.allNodes[neighbor][4] = (round(math.hypot(self.target[0] - neighbor[0],
                                                                    self.target[1] - neighbor[1])) * 10)
@@ -251,6 +256,7 @@ class Maze:
                     realNeighbor.append(self.allNodes[neighbor])
 
         return realNeighbor
+
 
     def astar(self):
         while self.openList:
@@ -274,7 +280,8 @@ class Maze:
                 if [n[0], n[1]] == [self.target[0], self.target[1]]:
                     print('Path Found')
                     path = self.getPath(n)
-                    return
+                    #print(path)
+                    return path
 
                 # else add the new neighbors to the open list
                 else:
@@ -296,7 +303,6 @@ class Maze:
 
             else:
                 return self.path
-
     def printPath(self):
         print(self.path)
 
@@ -348,12 +354,10 @@ class Maze:
                 print(" ".join(printRow))
 
         if _type==3:
-            print("here")
             for i in range(0,len(self.fullLayout)):
                 printRow = []
                 for j in range(0,len(self.fullLayout[i])):
-                    printRow.append(format(self.allNodes[(i,j)][7],'04d'))
-
+                    printRow.append(format(self.allNodes[(i,j)][7],'03d'))
                 print(" ".join(printRow))
                 print('')
         return 0
@@ -375,7 +379,7 @@ class Maze:
                     else:
                         element = 'O'
                     for particle in _particlefilter.particles:
-                        if i == particle.x and j == particle.y:
+                        if i == particle.y and j == particle.x:
                             element = 'P'
                     printRow.append(element)
                 " ".join(printRow)
@@ -393,13 +397,17 @@ class Maze:
                     else:
                         element = 'O'
                     for particle in _particlefilter.particles:
-                        if i == particle.x and j == particle.y:
+                        if i == particle.y and j == particle.x:
                             element = 'P'
                         if (i,j) in particle.rayTracedNodes and self.fullLayout[i][j] != 1:
                             element = '*'
                     printRow.append(element)
                 " ".join(printRow)
                 print(" ".join(printRow))
+
+
+
+
 
 
     def printLayout(self):
@@ -420,21 +428,16 @@ class Maze:
             print(" ".join(printRow))
 
 '''
-start = (22, 2)
+start = (23, 2)
 resolution = 8
-fieldsize = 30
+fieldsize = 1
+layout = [['XXOO', 'OXXO', 'OXXX'],
+	      ['XOXO', 'OXOO', 'OXXX'],
+	      ['XXXO', 'OOXO', 'OXEX']]
 
-
-layout = [['XXOO', 'OXXO', 'OXXO', 'OXXX'],
-          ['XOXO', 'OXXO', 'OXXO', 'OXOX'],
-          ['XXXO', 'OXXO', 'OXEO', 'OOXX']]
-
-
-
-newMaze = Maze(start, layout, resolution, fieldsize)
+newMaze = Maze(layout, resolution, fieldsize)
 newMaze.astar()
-newMaze.printprintLayout()
-print(newMaze.target)
+
 
 # Figure Drawing
 
@@ -444,7 +447,7 @@ mazeWalls3 = [[160, 160], [240, 160]]
 
 mazeWalls4 = [[10, 10], [240, 10]]
 mazeWalls5 = [[240, 10], [240, 240]]
-mazeWalls6 = [[240, 240], [10, 240]]
+mazeWalls6 = [[160, 240], [10, 240]]
 mazeWalls7 = [[10, 240], [10, 10]]
 
 pathD = newMaze.path

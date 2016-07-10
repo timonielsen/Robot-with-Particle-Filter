@@ -10,27 +10,32 @@ class Particlefilter:
 	 	self.noise = _noise; #the noise with which the resampling of points is affected
 	 	self.noOfParticles = _noOfParticles
 	 	self.maze = _maze
-
+		self.offset = 10 #distance from the walls
 	 	"""Fill up the particleFilter with randomly placed points.
 	 	Somehow we need the dimensions of the maze to do this properly"""
 	 	self.particles = []
 		self.weights = []
 		self.totalWeight = 0 # To normalise the weights of particles
-		init_xcoordinates =((_maze.resolution+1) * 3 - 1) * np.random.random_sample(self.noOfParticles,)
-		init_ycoordinates = ((_maze.resolution+1) * 3 - 1) * np.random.random_sample(self.noOfParticles,)
+		firstrowParticles = int(self.noOfParticles/3)
+		secondrowParticles = self.noOfParticles - 2*firstrowParticles
+		thirdrowParticles = self.noOfParticles - secondrowParticles - firstrowParticles
+		interval = _maze.resolution - 2*self.offset - 1
+		y1 = [x + self.offset for x in interval * np.random.random_sample(firstrowParticles,)]
+		y2 = [x + self.offset + _maze.resolution for x in interval * np.random.random_sample(secondrowParticles,)]
+		y3 = [x + self.offset + 2*_maze.resolution for x in interval * np.random.random_sample(thirdrowParticles,)]
+		init_ycoordinates = y1+y2+y3
+		init_xcoordinates = (self.maze.resolution*3-1-2*self.offset)*np.random.random_sample(self.noOfParticles,)
+		init_xcoordinates = [x+self.offset for x in init_xcoordinates]
 		init_angles = 2 * math.pi * np.random.random_sample(self.noOfParticles,)
 	 	for i in range(self.noOfParticles):
 	 		self.particles.append(Particle.Particle(init_xcoordinates[i],init_ycoordinates[i],init_angles[i])) #change to some random value
-			self.particles[i].set_noise(1.0,1.0,5.0)
-
+			self.particles[i].set_noise(5.0,1.0,1.0)
 
 	 def measure(self):
 	 	"""for each particles calculate the distance to the walls"""
 	 	for i in range(self.noOfParticles):
 	 		self.particles[i].calcDistance(self.maze)
-
 	 		#print(self.particles[i].measurements)
-
 
 
 	 def compare(self, _robot):
@@ -64,16 +69,23 @@ class Particlefilter:
 			while self.particles[index].weight < beta:
 				beta = beta - self.particles[index].weight
 				index = (index+1)%self.noOfParticles
-			resampledparticles.append(self.particles[index])
+			resampledparticles.append(Particle.Particle(self.particles[index].x,self.particles[index].y,self.particles[index].orientation))
+			resampledparticles[i].set_noise(5.0,1.0,1.0)
 		self.particles = []
 		self.particles = resampledparticles
-		#print resampledparticles[5].x
-	 	return 0
+		print resampledparticles[5].x
+		#print self.particles[5].x
+	 	#return 0
+
+	 def reset_particles(self):
+		 for p in self.particles:
+			 p.weight = 0.0
+			 p.measurements = [0.0,0.0,0.0]
 
 	 def updateLocation(self, _angle,_distance):
 	  	"""move all particles as the robot has moved"""
-		for p in self.particles:
-			p.move(_angle,_distance,self.maze)
+		for i in range(0, self.noOfParticles):
+			self.particles[i].move(_angle,_distance,self.maze)
 	 	return 0
 
 	 def showParticles(self, _loc):
@@ -84,12 +96,27 @@ class Particlefilter:
 		 turtle.setworldcoordinates(0,(self.maze.resolution+1)*3,(self.maze.resolution+1)*3,0)
 		 turtle.up()
 		 turtle.clearstamps()
+		 lines = turtle.Turtle()
+		 lines.color("black")
+		 lines.pensize(5)
+		 for i in range(len(self.maze.layout)):
+			 for j in range(len(self.maze.layout[0])):
+				 if self.maze.layout[i][j][2]=='X':
+					 lines.penup()
+					 lines.goto(j*(self.maze.resolution)-1,(i+1)*self.maze.resolution-1)
+					 lines.pendown()
+					 lines.forward(self.maze.resolution)
+					 lines.penup()
+				 if self.maze.layout[i][j][1] == 'X':
+					 lines.penup()
+					 lines.goto(j * (self.maze.resolution) - 1, i * self.maze.resolution)
+					 lines.pendown()
+					 lines.forward(self.maze.resolution)
+					 lines.penup()
 		 turtle.shape('tri')
-		 print len(self.particles)
 		 for p in self.particles:
-			 #print(p.x,p.y)
-			 p.x = p.x + random.gauss(0.0,p.forward_noise)
-			 p.y = p.y + random.gauss(0.0, p.forward_noise)
+			 #p.add_noise(self.maze.dimX,self.maze.dimY)
+			 #print(p.x, p.y)
 			 turtle.setposition(p.x,p.y)
 			 heading = (p.orientation/(2*math.pi))*360
 			 turtle.setheading(heading)
@@ -102,12 +129,6 @@ class Particlefilter:
 		 headingr = (_loc[2]/(2*math.pi))*360
 		 turtle.setheading(headingr)
 		 turtle.update()
-
-	 def printMeasures(self):
-		for i in range(self.noOfParticles):
-			print(self.particles[i].measurements)
-
-
 
 
 
