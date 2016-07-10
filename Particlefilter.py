@@ -69,7 +69,8 @@ class Particlefilter:
 			while self.particles[index].weight < beta:
 				beta = beta - self.particles[index].weight
 				index = (index+1)%self.noOfParticles
-			resampledparticles.append(self.particles[index])
+			resampledparticles.append(Particle.Particle(self.particles[index].x,self.particles[index].y,self.particles[index].orientation))
+			resampledparticles[i].set_noise(5.0,1.0,1.0)
 		self.particles = []
 		self.particles = resampledparticles
 		print resampledparticles[5].x
@@ -84,7 +85,7 @@ class Particlefilter:
 	 def updateLocation(self, _angle,_distance):
 	  	"""move all particles as the robot has moved"""
 		for i in range(0, self.noOfParticles):
-			self.particles[i].x = int(self.particles[i].x) + 5.2
+			self.particles[i].move(_angle,_distance,self.maze)
 	 	return 0
 
 	 def showParticles(self, _loc):

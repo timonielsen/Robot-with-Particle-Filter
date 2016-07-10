@@ -118,22 +118,20 @@ class Particle:
 		return prob
 
 	def move(self,_angle,_distance,_maze):
-		self.x = self.x + 5.0
-
-		# newOr = self.orientation + float(_angle) + 0.2*random.gauss(0.0,(self.rotate_noise/360)*2*math.pi)
-		# newOr %= 2*math.pi
-		# self.orientation = newOr
-		# newdist = float(_distance)
-		# self.x += newdist * math.cos(self.orientation)
-		# self.y -= newdist * math.sin(self.orientation)
-		# if self.x >= _maze.dimX:
-		# 	self.x = _maze.dimX-1
-		# if self.y >= _maze.dimY:
-		# 	self.y = _maze.dimY-1
-		# if self.x < 0:
-		# 	self.x = 0.0
-		# if self.y < 0:
-		# 	self.y = 0.0
+		newOr = self.orientation + float(_angle) + 0.2*random.gauss(0.0,(self.rotate_noise/360)*2*math.pi)
+		newOr %= 2*math.pi
+		self.orientation = newOr
+		newdist = float(_distance)
+		self.x += newdist * math.cos(self.orientation)
+		self.y -= newdist * math.sin(self.orientation)
+		if self.x >= _maze.dimX:
+			self.x = _maze.dimX-1
+		if self.y >= _maze.dimY:
+			self.y = _maze.dimY-1
+		if self.x < 0:
+			self.x = 0.0
+		if self.y < 0:
+			self.y = 0.0
 		return 0
 
 
