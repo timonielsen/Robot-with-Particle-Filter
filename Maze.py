@@ -31,7 +31,7 @@ class Maze:
         self.dimY = len(self.fullLayout) #Dimension of grid in Y direction
 
         #Parameters for path finding
-        self.home = (5, 5) #Location of robot.
+        self.home = (50, 50) #Location of robot.
         self.openList = []
         self.closedList = []
         self.check = []
@@ -201,7 +201,7 @@ class Maze:
 
                     for dirW in directions_w:
                         for d in range(1, int(self.resolution / 2)):
-                            weight = 80 / d
+                            weight = self.resolution*100 / d
                             if 0 < (a + dirW[0] * d) < (sizeY) and 0 < (b + dirW[1] * d) < (sizeX) \
                                     and self.allNodes[(a + dirW[0] * d, b + dirW[1] * d)][7] < weight:
 
@@ -213,7 +213,7 @@ class Maze:
 
     def neighbors(self, node):
         # Directions to the neighbors of the selected node
-        directions = [[1, 0], [0, 1], [-1, 0], [0, -1], [-1, -1], [1, -1], [-1, 1], [1, 1]]
+        directions = [[1, 0], [0, 1], [-1, 0], [0, -1]]#, [-1, -1], [1, -1], [-1, 1], [1, 1]]
 
         # Empty list for the real neighbors that are inside the maze and are not walls with updated cost values
         realNeighbor = []
@@ -357,7 +357,7 @@ class Maze:
             for i in range(0,len(self.fullLayout)):
                 printRow = []
                 for j in range(0,len(self.fullLayout[i])):
-                    printRow.append(format(self.allNodes[(i,j)][7],'03d'))
+                    printRow.append(format(self.allNodes[(i,j)][7],'04d'))
 
                 print(" ".join(printRow))
                 print('')
