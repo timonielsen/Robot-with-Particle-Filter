@@ -19,7 +19,7 @@ class Maze:
         self.layout = _layout #Simple layout of maze, which is translated into a full layout
         self.resolution = _resolution #Resolution with which the full layout will be produced
         self.fieldsize = _fieldsize #Size of each cell in maze. In the competetion case is 30 (cm)
-        self.cellSize = _fieldsize/_resolution
+        self.cellSize = float(_fieldsize)/float(_resolution)
 
         #Refinement of layout
         self.fullLayout = self.layoutMaker()
@@ -198,11 +198,11 @@ class Maze:
             for b in range(0, sizeX):
 
                 if self.fullLayout[a][b] == 1:
-                    directions_w = [[1, 0], [0, 1], [-1, 0], [0, -1], [-1, -1], [1, -1], [-1, 1], [1, 1]]
+                    directions_w = [[1, 0], [0, 1], [-1, 0], [0, -1]]#, [-1, -1], [1, -1], [-1, 1], [1, 1]]
 
                     for dirW in directions_w:
                         for d in range(1, int(self.resolution / 2)):
-                            weight = 80 / d
+                            weight = self.resolution*100 / d
                             if 0 < (a + dirW[0] * d) < (sizeY) and 0 < (b + dirW[1] * d) < (sizeX) \
                                     and self.allNodes[(a + dirW[0] * d, b + dirW[1] * d)][7] < weight:
 
@@ -214,7 +214,7 @@ class Maze:
 
     def neighbors(self, node):
         # Directions to the neighbors of the selected node
-        directions = [[1, 0], [0, 1], [-1, 0], [0, -1], [-1, -1], [1, -1], [-1, 1], [1, 1]]
+        directions = [[1, 0], [0, 1], [-1, 0], [0, -1]]#, [-1, -1], [1, -1], [-1, 1], [1, 1]]
 
         # Empty list for the real neighbors that are inside the maze and are not walls with updated cost values
         realNeighbor = []
@@ -231,9 +231,9 @@ class Maze:
                 is either unexplored or the new route to the node is cheaper than the existing'''
             if neighbor in self.allNodes and self.allNodes[neighbor][2] != 1:
 
-                if (node[1] - self.allNodes[tuple(node)][6][1])*neighbor[0] + \
-                                (self.allNodes[tuple(node)][6][1] - neighbor[1])*node[0] + \
-                                (neighbor[1] - node[1])*self.allNodes[tuple(node)][6][0] == 0:
+                if (node[1] - self.allNodes[tuple(node)][6][1]) * neighbor[0] + \
+                                (self.allNodes[tuple(node)][6][1] - neighbor[1]) * node[0] + \
+                                (neighbor[1] - node[1]) * self.allNodes[tuple(node)][6][0] == 0:
 
                     tcost = 0
 
@@ -280,8 +280,7 @@ class Maze:
                 if [n[0], n[1]] == [self.target[0], self.target[1]]:
                     print('Path Found')
                     path = self.getPath(n)
-                    #print(path)
-                    return path
+                    return
 
                 # else add the new neighbors to the open list
                 else:
@@ -357,7 +356,7 @@ class Maze:
             for i in range(0,len(self.fullLayout)):
                 printRow = []
                 for j in range(0,len(self.fullLayout[i])):
-                    printRow.append(format(self.allNodes[(i,j)][7],'03d'))
+                    printRow.append(format(self.allNodes[(i,j)][7],'04d'))
                 print(" ".join(printRow))
                 print('')
         return 0
@@ -379,7 +378,7 @@ class Maze:
                     else:
                         element = 'O'
                     for particle in _particlefilter.particles:
-                        if i == particle.y and j == particle.x:
+                        if i == particle.x and j == particle.y:
                             element = 'P'
                     printRow.append(element)
                 " ".join(printRow)
@@ -397,7 +396,7 @@ class Maze:
                     else:
                         element = 'O'
                     for particle in _particlefilter.particles:
-                        if i == particle.y and j == particle.x:
+                        if i == particle.x and j == particle.y:
                             element = 'P'
                         if (i,j) in particle.rayTracedNodes and self.fullLayout[i][j] != 1:
                             element = '*'

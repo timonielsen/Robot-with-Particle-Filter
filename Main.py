@@ -10,7 +10,7 @@ particlefilterNoise = 0 #the noise with which the resampling of points is affect
 noOfParticles = 2000 #number of particles in particle filter
 speedOfRobot = 1
 rotSpeedOfRotation = 1 #how fast the robot rotates
-resolution = 60
+resolution = 20
 fieldSize = 30
 T = 4
 
@@ -35,7 +35,8 @@ robot = Robot.Robot(maze, speedOfRobot, rotSpeedOfRotation)
 particlefilter = Particlefilter.Particlefilter(particlefilterNoise, noOfParticles, maze)
 #particlefilter.showParticles()
 
-particlefilter.showParticles(robot.getSimulatedLocation())
+'''particlefilter.showParticles(robot.getSimulatedLocation())
+
 for t in range(T):
     robot.simulateMove(0,5)
     print robot.simulateMeasurements() # it is for simulation of
@@ -52,16 +53,17 @@ for t in range(T):
     particlefilter.reset_particles()
 #print particlefilter.particles[10].x
     particlefilter.showParticles(robot.getSimulatedLocation())
-    time.sleep(5)
+    time.sleep(1)
 
     #time.sleep(15)
-#maze.astar()
+    '''
+maze.astar()
+robot.followPath(30,maze)
 #particlefilter.measure()
 #particlefilter.compare(robot)
-time.sleep(15)
-#maze.printPath()
+maze.printPath()
 maze.printLayoutAdvanced(2)
-#maze.printLayoutAdvancedParticleFilter(particlefilter,5)
+#maze.printLayoutAdvancedParticleFilter(particlefilter,4)
 '''
 Robot robot
 Particlefilter particlefilter

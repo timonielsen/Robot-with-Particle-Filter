@@ -118,6 +118,32 @@ class Robot:
     def getSimulatedLocation(self):
         return self.pr.getStateofParticle()
 
+    def followPath(self, _distance, _maze):
+        path = _maze.path
+        cellsToTravel = int(_distance/_maze.cellSize)
+
+        startcellY = _maze.allNodes[path[len(path)-1]][0]
+        startcellX = _maze.allNodes[path[len(path)-1]][1]
+        if cellsToTravel > len(path):
+            endCellY = _maze.allNodes[0][0]
+            endCellX = _maze.allNodes[0][1]
+        else:
+            endCellY =  _maze.allNodes[path[len(path)-cellsToTravel]][0]
+            endCellX =  _maze.allNodes[path[len(path)-cellsToTravel]][1]
+
+        xDist = endCellY - startcellY
+        yDist = endCellY - startcellY
+
+        distance = pythagoras(endCellX-startcellX, endCellY-startcellY)
+        orientation = math.arcsin((endCellY-startcellY)/)
+
+        return 0
+
+def pythagoras(length1, length2):
+    """caulcates the hypothenuse length of a diagonal of a right angled triangle"""
+    return math.sqrt(math.pow(length1,2) + math.pow(length2,2))
+
+
 
 
 
