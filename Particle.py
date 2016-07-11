@@ -7,7 +7,7 @@ class Particle:
 		"""initialise the particle"""
 		self.x = _x #location
 		self.y = _y
-		self.sense_noise = 0.0 		# a particle has the same features with robot like moving forward, rotating
+		self.sense_noise = 5.0 		# a particle has the same features with robot like moving forward, rotating
 		self.rotate_noise = 0.0 	# or measuring distances. Therefore, the noise parameters are added for the simplicity of
 		self.forward_noise = 0.0 	# calculations and moving particles.
 		self.orientation = _orientation #orientation of particle [0,2PI]
@@ -107,6 +107,9 @@ class Particle:
 		self.rotate_noise = _rnoise
 
 	def Gaussian(self, mu, sigma, x):
+		if sigma == 0:
+			print("error with gaussian. Division by 0")
+			return 0
 		return math.exp(-((mu - x) ** 2) / (sigma ** 2) / 2.0) / math.sqrt(2.0 * math.pi * (sigma ** 2))
 
 	def measure_prob(self, robotdist):
@@ -118,12 +121,14 @@ class Particle:
 		return prob
 
 	def move(self,_angle,_distance,_maze):
+		print(self.y, self.x, self.orientation, _angle, _distance)
+		print("movefunc")
 		newOr = self.orientation + float(_angle) + 0.2*random.gauss(0.0,(self.rotate_noise/360)*2*math.pi)
 		newOr %= 2*math.pi
 		self.orientation = newOr
 		newdist = -float(_distance)
-		self.x -= newdist * math.sin(self.orientation)
 		self.y -= newdist * math.cos(self.orientation)
+		self.x -= newdist * math.sin(self.orientation)
 		if self.x >= _maze.dimX:
 			self.x = _maze.dimX-1
 		if self.y >= _maze.dimY:
@@ -136,7 +141,7 @@ class Particle:
 
 
 	def getStateofParticle(self):
-		return [self.x,self.y,self.orientation]
+		return [self.y,self.x,self.orientation]
 
 	def calcDistance2(self,_maze):
 		cellx = int(self.x/_maze.resolution)
@@ -159,7 +164,7 @@ class Particle:
 
 	def measure_prob2(self,robotDist):
 		prob = [1.0,1.0,1.0,1.0]
-		for j in range(len(prob)):
+		for j in range(len(sob)):
 			for i in range(len(robotDist)):
 				prob[j] *= self.Gaussian(self.manhattanDist[(j+i)%len(prob)], self.sense_noise, robotDist[i])
 		self.weight2 = max(prob)

@@ -27,9 +27,14 @@ class Particlefilter:
 		init_ycoordinates = y1+y2+y3
 		init_xcoordinates = (self.maze.resolution*3-1-2*self.offset)*np.random.random_sample(self.noOfParticles,)
 		init_xcoordinates = [x+self.offset for x in init_xcoordinates]
+		'''
 		init_angles = 2 * math.pi * np.random.random_sample(self.noOfParticles,)
 	 	for i in range(self.noOfParticles):
 	 		self.particles.append(Particle.Particle(init_xcoordinates[i],init_ycoordinates[i],init_angles[i])) #change to some random value
+			self.particles[i].set_noise(5.0,1.0,1.0)
+		'''
+		for i in range(self.noOfParticles):
+	 		self.particles.append(Particle.Particle(random.random()*_maze.dimY,random.random()*_maze.dimX,random.random()*math.pi*2)) #change to some random value
 			self.particles[i].set_noise(5.0,1.0,1.0)
 
 	 def measure(self):
@@ -41,11 +46,10 @@ class Particlefilter:
 
 	 def compare(self, _robot):
 	 	"""compare measurements with measurement of robot and update weights"""
-		robotDistance = _robot.measure()
 		self.weights = []
 		for p in self.particles:
 			p.calcDistance(self.maze)
-			self.weights.append(p.measure_prob(robotDistance))
+			self.weights.append(p.measure_prob(_robot.measurement))
 	 	return 0
 
 	 def normalize_weights(self):
@@ -69,9 +73,9 @@ class Particlefilter:
 		indexOfMaxV = 0
 		for i in range(self.noOfParticles):
 			if (i%10)== 0 :
+				'''add random particles'''
 				index2 = int(np.random.uniform() * self.noOfParticles)
-				resampledparticles.append(Particle.Particle(self.particles[index2].x, self.particles[index2].y,self.particles[index2].orientation))
-				resampledparticles[i].set_noise(5.0, 1.0, 1.0)
+				resampledparticles.append(Particle.Particle(random.random()*self.maze.dimX,random.random()*self.maze.dimY,random.random()*math.pi*2))
 			else:
 				beta = beta + np.random.uniform()*2*maxW
 				while self.particles[index].weight < beta:
@@ -85,6 +89,8 @@ class Particlefilter:
 		self.particles = []
 		self.particles = resampledparticles
 		self.prWithHeighestW = indexOfMaxV
+		for i in range(self.noOfParticles):
+			self.particles[i].add_noise(self.maze.dimX, self.maze.dimY)
 		#print resampledparticles[5].x
 		#print self.particles[5].x
 	 	#return 0
@@ -93,6 +99,7 @@ class Particlefilter:
 		 for p in self.particles:
 			 p.weight = 0.0
 			 p.measurements = [0.0,0.0,0.0]
+			 p.rayTracedNodes = {}
 
 	 def updateLocation(self, _angle,_distance):
 	  	"""move all particles as the robot has moved"""
@@ -127,23 +134,23 @@ class Particlefilter:
 					 lines.penup()
 		 turtle.shape('tri')
 		 for p in self.particles:
-			 p.add_noise(self.maze.dimX,self.maze.dimY)
+			 #p.add_noise(self.maze.dimX,self.maze.dimY)
 			 #print(p.x, p.y)
-			 turtle.setposition(p.x,p.y)
+			 turtle.setposition(p.y,p.x)
 			 heading = (p.orientation/(2*math.pi))*360
 			 turtle.setheading(heading)
 			 turtle.color("red")
 			 turtle.stamp()
 			 #turtle.update()
-		 turtle.shape('dot')
-		 turtle.color("blue")
-		 turtle.setposition(self.particles[self.prWithHeighestW].x, self.particles[self.prWithHeighestW].y)
+		 ##turtle.shape('dot')
+		 ##turtle.color("blue")
+		 ##turtle.setposition(self.particles[self.prWithHeighestW].x, self.particles[self.prWithHeighestW].y)
 		 turtle.stamp()
 		 turtle.shape('turtle')
 		 turtle.color("green")
 		 turtle.setposition(_loc[0], _loc[1])
-		 headingr = (_loc[2] / (2 * math.pi)) * 360
-		 turtle.setheading(headingr)
+		 ##headingr = (_loc[2] / (2 * math.pi)) * 360
+		 ##turtle.setheading(headingr)
 		 #heading = (self.particles[self.prWithHeighestW].orientation / (2 * math.pi)) * 360
 		 #turtle.setheading(heading)
 		 turtle.update()

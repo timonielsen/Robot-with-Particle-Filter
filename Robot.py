@@ -16,12 +16,12 @@ class Robot:
         
         self.maze = _maze
         ###Variables for robot###
-        self.x = 13.0 #location, initiliased to zero as the robot initialy has no clue where it is
+        self.x = 40.0 #location, initiliased to zero as the robot initialy has no clue where it is
         self.y = 15.0
-        self.orientation = 0.6*(math.pi/2) #[0, 2PI]
+        self.orientation = 0 #0.6*(math.pi/2) #[0, 2PI]
         self.pr = Particle.Particle(self.x, self.y, self.orientation) # since we don't have any data for robot, for simulation
         # robot is defined as particle
-        self.pr.set_noise(5.0, 1.0, 1.0) # these are for movement and sense distribution
+        self.pr.set_noise(1.0, 1.0, 1.0) # these are for movement and sense distribution
         
         self.speed = _speed; #Speed with which the robot moves forwards
         self.rotationSpeed = _rotationSpeed; #
@@ -41,9 +41,14 @@ class Robot:
         self.measurementLimHigh = 1e10 #limit for measurement. Set to some desired value
         self.measurementLimLow = 0
 
-    
+    def getLocation(self):
+        if connected:
+            return 0
+        else:
+            return self.getSimulatedLocation()
 
-    def move(self, ):
+    def move(self):
+        print(self.y, self.x)
         if connected:
             return 0
         else:
@@ -121,13 +126,10 @@ class Robot:
         return self.pr.measurements
 
     def simulateMove(self,_angle,_distance):
-        print(self.pr.x)
         self.pr.move(_angle,_distance,self.maze)
         self.x = int(round(self.pr.x))
         self.y = int(round(self.pr.y))
         self.orientation = self.pr.orientation
-        print(self.pr.x)
-        print("done here")
         return 0
 
     def getSimulatedLocation(self):
@@ -145,8 +147,8 @@ class Robot:
             endCellY = int(_maze.allNodes[path[0]][0])
             endCellX = int(_maze.allNodes[path[0]][1])
         else:
-            endCellY =  int(_maze.allNodes[path[len(path)-cellsToTravel]][0])
-            endCellX =  int(_maze.allNodes[path[len(path)-cellsToTravel]][1])
+            endCellY =  int(_maze.allNodes[path[len(path)-cellsToTravel-1]][0])
+            endCellX =  int(_maze.allNodes[path[len(path)-cellsToTravel-1]][1])
 
         xDist = endCellX - startcellX
         yDist = endCellY - startcellY

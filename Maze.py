@@ -385,7 +385,7 @@ class Maze:
                     else:
                         element = 'O'
                     for particle in _particlefilter.particles:
-                        if i == particle.x and j == particle.y:
+                        if i == int(round(particle.y)) and j == int(round(particle.x)):
                             element = 'P'
                     printRow.append(element)
                 " ".join(printRow)
@@ -403,7 +403,7 @@ class Maze:
                     else:
                         element = 'O'
                     for particle in _particlefilter.particles:
-                        if i == particle.x and j == particle.y:
+                        if j == int(round(particle.x)) and i == int(round(particle.y)):
                             element = 'P'
                         if (i,j) in particle.rayTracedNodes and self.fullLayout[i][j] != 1:
                             element = '*'
