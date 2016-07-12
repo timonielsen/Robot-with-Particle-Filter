@@ -164,6 +164,10 @@ class Robot:
         
         return 0
 
+    def reset(self):
+        self.pr.rayTracedNodes = {}
+        self.measurement = []
+
 
 
 def pythagoras(length1, length2):

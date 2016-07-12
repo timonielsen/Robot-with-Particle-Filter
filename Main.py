@@ -7,10 +7,10 @@ import numpy as np
 layout = 0 #probably an int array
 home = 0 #end of maze
 particlefilterNoise = 0 #the noise with which the resampling of points is affected
-noOfParticles = 2000 #number of particles in particle filter
+noOfParticles = 5000 #number of particles in particle filter
 speedOfRobot = 1
 rotSpeedOfRotation = 1 #how fast the robot rotates
-resolution = 50
+resolution = 30
 fieldSize = 30
 T = 15
 
@@ -36,8 +36,23 @@ particlefilter = Particlefilter.Particlefilter(particlefilterNoise, noOfParticle
 #particlefilter.showParticles()
 
 #particlefilter.showParticles(robot.getSimulatedLocation())
-'''
+
 for t in range(T):
+  robot.measure()
+  particlefilter.compare(robot)
+  particlefilter.normalize_weights()
+  particlefilter.resample()
+  maze.update((int(robot.y),int(robot.x)))
+  maze.astar()
+  robot.calculateMovementOnPath(8,maze)
+  maze.printLayoutAdvancedRobot(robot,6)
+  particlefilter.showParticles(robot.getSimulatedLocation())
+  robot.move()
+  particlefilter.updateLocation(robot.movement[1], robot.movement[0])
+  robot.reset()
+  
+
+  '''
     robot.simulateMove(0,5)
     robot.simulateMeasurements() # it is for simulation of
     # print robot.pr.orientation
@@ -54,8 +69,10 @@ for t in range(T):
 #print particlefilter.particles[10].x
     particlefilter.showParticles(robot.getSimulatedLocation())
     #time.sleep(1)
-'''
+    '''
+time.sleep(1)
 
+'''
     #time.sleep(15)
 i = 0
 while i < 20:
@@ -86,6 +103,9 @@ while i < 20:
   i += 1
 
 print T
+'''
+
+
 
 #particlefilter.measure()
 #particlefilter.compare(robot)
