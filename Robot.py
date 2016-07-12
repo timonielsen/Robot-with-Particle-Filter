@@ -87,22 +87,20 @@ class Robot:
         """Updates measurement[] with a series of measurements."""
         if connected:
             angles = []
-            for i in range(0,len(self.measurements)):
-                angle = self.orientation + math.pi/2.0 - i * math.pi / (len(self.measurements)-1) # calculates the angles for which the sensors measure
-                angle = normalizeAngle(angle)
             sleepTime = 0.5 #Set time between measures (has to be there for the program to wait with the next command until rotation is done)
-            servo(179)
-            time.sleep(sleepTime)
-            self.measurement[0] = us_dist(15) #Measure
-            time.sleep(sleepTime)
-            servo(90)
-            time.sleep(sleepTime)
-            self.measurement[1] = us_dist(15) #Measure
-            time.sleep(sleepTime)
-            servo(1)
-            time.sleep(sleepTime)
-            self.measurement[2] = us_dist(15) #MeasuresimulateMeasurements
+            '''calculate angles to measure'''
+            for i in range(0, len(self.measurement)):
+                angle = (len(self.measurement)-i-1) * math.pi / (len(self.measurement)-1) # calculates the angles for which the sensors measure
+                angle %= 2*math.pi
+                angles.append(int(round(angle*180/math.pi)))
+
+            ''' perform measurement'''
+            for i in range(0, len(self.measurement)):
+                servo(angles[i])
+                time.sleep(sleepTime)
+                self.measurement[i] = us_dist(15)
             stop()
+            
         else:
             self.measurement = self.simulateMeasurements()
         return self.measurement
