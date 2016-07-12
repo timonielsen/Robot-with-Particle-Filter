@@ -17,6 +17,7 @@ class Particlefilter:
 		self.weights = []
 		self.totalWeight = 0 # To normalise the weights of particles
 		self.prWithHeighestW = 0
+		self.bestParticle = 0
 		firstrowParticles = int(self.noOfParticles/3)
 		secondrowParticles = self.noOfParticles - 2*firstrowParticles
 		thirdrowParticles = self.noOfParticles - secondrowParticles - firstrowParticles
@@ -28,8 +29,12 @@ class Particlefilter:
 		init_xcoordinates = (self.maze.resolution*3-1-2*self.offset)*np.random.random_sample(self.noOfParticles,)
 		init_xcoordinates = [x+self.offset for x in init_xcoordinates]
 		init_angles = 2 * math.pi * np.random.random_sample(self.noOfParticles,)
-	 	for i in range(self.noOfParticles):
+	 	'''for i in range(self.noOfParticles):
 	 		self.particles.append(Particle.Particle(init_xcoordinates[i],init_ycoordinates[i],init_angles[i])) #change to some random value
+			self.particles[i].set_noise(5.0,1.0,1.0)
+			'''
+		for i in range(self.noOfParticles):
+	 		self.particles.append(Particle.Particle(random.random()*_maze.dimY,random.random()*_maze.dimX,random.random()*math.pi*2)) #change to some random value
 			self.particles[i].set_noise(5.0,1.0,1.0)
 
 	 def measure(self):
@@ -67,10 +72,11 @@ class Particlefilter:
 		beta = 0.0
 		maxV = 0.0
 		indexOfMaxV = 0
-		for i in range(self.noOfParticles):
+
+		for i in range(self.noOfParticles-1):
 			if (i%10)== 0 :
 				index2 = int(np.random.uniform() * self.noOfParticles)
-				resampledparticles.append(Particle.Particle(self.particles[index2].x, self.particles[index2].y,self.particles[index2].orientation))
+				resampledparticles.append(Particle.Particle(random.random()*self.maze.dimX, random.random()*self.maze.dimY, random.random()*math.pi*2))
 				resampledparticles[i].set_noise(5.0, 1.0, 1.0)
 			else:
 				beta = beta + np.random.uniform()*2*maxW
@@ -79,12 +85,27 @@ class Particlefilter:
 					index = (index+1)%self.noOfParticles
 				resampledparticles.append(Particle.Particle(self.particles[index].x,self.particles[index].y,self.particles[index].orientation))
 				resampledparticles[i].set_noise(5.0,1.0,1.0)
-				if(self.particles[index].weight>maxW):
-					maxW = self.particles[index].weight
-					indexOfMaxV = i
+				#if(self.particles[index].weight>maxW):
+					#maxW = self.particles[index].weight
+					#indexOfMaxV = i
+
+
+		tempW = 0
+		'''get the best particle'''
+		for i in range(self.noOfParticles):
+			if(self.particles[i].weight > tempW):
+				tempW = self.particles[i].weight
+				indexOfMaxV = i
+		bestParticle = Particle.Particle(self.particles[indexOfMaxV].x,self.particles[indexOfMaxV].y,self.particles[indexOfMaxV].orientation)
+		bestParticle.set_noise(5.0, 1.0, 1.0)
+		resampledparticles.append(bestParticle)
+		self.bestParticle = bestParticle
+
+		for p in resampledparticles:
+			p.add_noise(self.maze.dimX,self.maze.dimY)
 		self.particles = []
 		self.particles = resampledparticles
-		self.prWithHeighestW = indexOfMaxV
+		#self.prWithHeighestW = indexOfMaxV
 		#print resampledparticles[5].x
 		#print self.particles[5].x
 	 	#return 0
@@ -93,6 +114,7 @@ class Particlefilter:
 		 for p in self.particles:
 			 p.weight = 0.0
 			 p.measurements = [0.0,0.0,0.0]
+			 p.rayTracedNodes = {}
 
 	 def updateLocation(self, _angle,_distance):
 	  	"""move all particles as the robot has moved"""
@@ -127,22 +149,21 @@ class Particlefilter:
 					 lines.penup()
 		 turtle.shape('tri')
 		 for p in self.particles:
-			 p.add_noise(self.maze.dimX,self.maze.dimY)
 			 #print(p.x, p.y)
 			 turtle.setposition(p.x,p.y)
-			 heading = (p.orientation/(2*math.pi))*360
+			 heading = ((p.orientation +math.pi/2) / (2 * math.pi)) * 360
 			 turtle.setheading(heading)
 			 turtle.color("red")
 			 turtle.stamp()
 			 #turtle.update()
 		 turtle.shape('dot')
 		 turtle.color("blue")
-		 turtle.setposition(self.particles[self.prWithHeighestW].x, self.particles[self.prWithHeighestW].y)
+		 turtle.setposition(self.bestParticle.x, self.bestParticle.y)
 		 turtle.stamp()
 		 turtle.shape('turtle')
 		 turtle.color("green")
 		 turtle.setposition(_loc[0], _loc[1])
-		 headingr = (_loc[2] / (2 * math.pi)) * 360
+		 headingr = ((_loc[2] +math.pi/2) / (2 * math.pi)) * 360
 		 turtle.setheading(headingr)
 		 #heading = (self.particles[self.prWithHeighestW].orientation / (2 * math.pi)) * 360
 		 #turtle.setheading(heading)

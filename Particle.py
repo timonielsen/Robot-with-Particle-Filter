@@ -58,7 +58,7 @@ class Particle:
 			iterator = 0
 			while intersectionFound is False:
 				#update point on ray which we analyse to see whether it's a wall or not
-				raytracer = [raytracer[0] - 0.99*math.sin(angles[k]), raytracer[1] + 0.99*math.cos(angles[k])]
+				raytracer = [raytracer[0] + 0.99*math.cos(angles[k]), raytracer[1] - 0.99*math.sin(angles[k])]
 				i = iround(raytracer[0]) #find which cell is in the point we are analysing
 				j = iround(raytracer[1])
 				self.rayTracedNodes[(i,j)] = (i,j)
@@ -121,9 +121,9 @@ class Particle:
 		newOr = self.orientation + float(_angle) + 0.2*random.gauss(0.0,(self.rotate_noise/360)*2*math.pi)
 		newOr %= 2*math.pi
 		self.orientation = newOr
-		newdist = -float(_distance)
+		newdist = float(_distance)
 		self.x -= newdist * math.sin(self.orientation)
-		self.y -= newdist * math.cos(self.orientation)
+		self.y += newdist * math.cos(self.orientation)
 		if self.x >= _maze.dimX:
 			self.x = _maze.dimX-1
 		if self.y >= _maze.dimY:

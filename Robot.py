@@ -16,8 +16,8 @@ class Robot:
         
         self.maze = _maze
         ###Variables for robot###
-        self.x = 13.0 #location, initiliased to zero as the robot initialy has no clue where it is
-        self.y = 15.0
+        self.x = 5.0 #location, initiliased to zero as the robot initialy has no clue where it is
+        self.y = 25.0
         self.orientation = 0.6*(math.pi/2) #[0, 2PI]
         self.pr = Particle.Particle(self.x, self.y, self.orientation) # since we don't have any data for robot, for simulation
         # robot is defined as particle
@@ -97,7 +97,7 @@ class Robot:
             time.sleep(sleepTime)
             servo(1)
             time.sleep(sleepTime)
-            self.measurement[2] = us_dist(15) #Measure
+            self.measurement[2] = us_dist(15) #MeasuresimulateMeasurements
             stop()
         else:
             self.measurement = self.simulateMeasurements()
@@ -134,6 +134,11 @@ class Robot:
         return self.pr.getStateofParticle()
 
     def calculateMovementOnPath(self, _distance, _maze):
+        if _distance == 0:
+            self.movement = [0,0]
+            return
+
+
         path = _maze.path
         cellsToTravel = int(_distance/_maze.cellSize)
 
@@ -152,12 +157,24 @@ class Robot:
         yDist = endCellY - startcellY
 
         distance = pythagoras(endCellX-startcellX, endCellY-startcellY)
-        orientation = math.atan2(yDist,xDist)
+        orientation = math.atan2(-xDist,yDist)
 
         rotation = orientation - self.orientation
         self.movement = [distance,rotation]
         
         return 0
+
+    def reset(self):
+        self.pr.rayTracedNodes = {}
+        self.measurement = []
+
+    def setLocation(self, _x, _y, _orient):
+        self.x = _x
+        self.y = _y
+        self.orientation = _orient
+        self.pr.x = _x
+        self.pr.y =_y
+        self.pr.orientation = _orient
 
 
 
