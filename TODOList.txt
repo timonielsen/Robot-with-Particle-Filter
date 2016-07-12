@@ -7,9 +7,11 @@ TODO LIST
 
 - Remove all hardcoded values to easier optimise script (do this in a branch to avoid fucking up the master)
 
-- Write and rewrite all robot functions such that when the robot is connected it runs the same script but with actual robot functions.
+DONE!!!- Write and rewrite all robot functions such that when the robot is connected it runs the same script but with actual robot functions.
 
-- Retest measures taken on robot movement
+DONE!!! - Retest measures taken on robot movement 
+
+- Set Correct sleep time for robot rotation
 
 - Compensate for the fact that sensor and center of rotation is not in the same spot.
 
@@ -18,3 +20,7 @@ TODO LIST
 - Optimise algorithm!! This is much easier when hardcoded values are removed and the script has been cleaned up!! (do cleaning in a branch!!!)
 
 - Run physical tests with the robot!
+
+- DONT use the angle %= 360 or angle %= math.pi*2. This only want positive values, and this allows for negative values
+
+

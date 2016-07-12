@@ -46,7 +46,7 @@ class Particlefilter:
 
 	 def compare(self, _robot):
 	 	"""compare measurements with measurement of robot and update weights"""
-		robotDistance = _robot.measure()
+		robotDistance = _robot.measurement
 		self.weights = []
 		for p in self.particles:
 			p.calcDistance(self.maze)

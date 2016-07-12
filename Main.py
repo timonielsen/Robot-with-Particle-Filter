@@ -50,7 +50,7 @@ for t in range(T):
   maze.astar()
 
   robot.calculateMovementOnPath(20,maze)
-  maze.printLayoutAdvancedRobot(robot,6)
+  #maze.printLayoutAdvancedRobot(robot,6)
   particlefilter.showParticles(robot.getSimulatedLocation())
 
   robot.move()

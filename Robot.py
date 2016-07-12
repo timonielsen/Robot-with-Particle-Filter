@@ -43,9 +43,10 @@ class Robot:
 
     
 
-    def move(self, ):
+    def move(self):
         if connected:
-            return 0
+            self.rotate(self.movement[1])
+            self.drive(self.movement[0])
         else:
             self.simulateMove(self.movement[1],self.movement[0])
             return 0
@@ -53,7 +54,7 @@ class Robot:
     def drive(self, _distance):
         """Moves the robot. postive values=forward, negative values=backward"""
         if connected:
-            distance = 35 #cm INPUT
+            distance = _distance #cm INPUT
             speed = 160 #constant
             unitSpeed = 11.11 #Units/second CONSTANT
             cmPrUnit = 1.1483 #Constant
@@ -71,15 +72,32 @@ class Robot:
         return 0
 
     def rotate(self, _angle):
+        if abs(_angle) < 0.001:
+            return 0
         """Rotate robot. Be aware of sign of angle. We need to figure out if CW is positive"""
         if connected:
-            fullCircle = 32 #units
-            partsOfCircle = 360/_angle #how big a part of a full circle is rotated. eg 90 degrees = 4
+            if _angle < math.pi:
+                fullCircle = 32 #units
+                partsOfCircle = 2*math.pi/_angle #how big a part of a full circle is rotated. eg 90 degrees = 4
+                sleeptime = 5 #CHANGE BY MEASURE!
 
-            units = int(round(fullCircle/partsOfCircle))
-            set_speed(80)  #DO NOT CHANGS UNLESS NEW TESTS ARE MADE WITH ROBOT TO CHECK HOW MANY UNITS GO TO FULL CIRCLE
-            enc_tgt(1,1,units)
-            right_rot() #Choose whether it should be clockwise or counterclockwise
+                units = int(round(fullCircle/partsOfCircle))
+                set_speed(80)  #DO NOT CHANGS UNLESS NEW TESTS ARE MADE WITH ROBOT TO CHECK HOW MANY UNITS GO TO FULL CIRCLE
+                enc_tgt(1,1,units)
+                right_rot() #Choose whether it should be clockwise or counterclockwise
+                time.sleep(sleepTime)
+            else
+                angle = 2*math.pi-_angle
+                fullCircle = 32 #units
+                partsOfCircle = 2*math.pi/angle #how big a part of a full circle is rotated. eg 90 degrees = 4
+                sleeptime = 5 #CHANGE BY MEASURE!
+
+                units = int(round(fullCircle/partsOfCircle))
+                set_speed(80)  #DO NOT CHANGS UNLESS NEW TESTS ARE MADE WITH ROBOT TO CHECK HOW MANY UNITS GO TO FULL CIRCLE
+                enc_tgt(1,1,units)
+                left_rot() #Choose whether it should be clockwise or counterclockwise
+                time.sleep(sleepTime)
+
 
         return 0
 

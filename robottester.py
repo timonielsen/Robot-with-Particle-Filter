@@ -39,10 +39,33 @@ print maze2
 
 maze = Maze.Maze(layout, resolution, fieldSize)
 robot = Robot.Robot(maze, speedOfRobot, rotSpeedOfRotation) 
-particlefilter = Particlefilter.Particlefilter(particlefilterNoise, noOfParticles, maze)
-maze.astar()
+#particlefilter = Particlefilter.Particlefilter(particlefilterNoise, noOfParticles, maze)
+#maze.astar()
 
-robot.rotate(math.pi)
-robot.move(10)
-robot.rotate(math.pi)
-robot.move(10)
+robot.measure()
+print(robot.measurement)
+robot.move([10,0])
+
+robot.measure()
+print(robot.measurement)
+robot.move([10,0])
+
+robot.measure()
+print(robot.measurement)
+robot.rotate([10,-math.pi/2])
+
+robot.measure()
+print(robot.measurement)
+robot.rotate([10,-math.pi/2])
+
+robot.measure()
+print(robot.measurement)
+robot.move([10,0])
+
+robot.measure()
+print(robot.measurement)
+robot.rotate([10,math.pi/2])
+
+robot.measure()
+print(robot.measurement)
+robot.rotate([10])
