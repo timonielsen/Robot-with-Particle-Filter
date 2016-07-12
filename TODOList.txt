@@ -1,26 +1,46 @@
-TODO LIST
+TODO LIST.
 
 
-- Reassign weights to maze. Check print type 3 (of the maze class) to see how the weights are currently not that good at the end of walls
+FIRST PRIORITY (not in prioritized order):
+- 1: Reassign weights to maze. Check print type 3 (of the maze class) to see how the weights are currently creating weird zones at the end of walls (might have to rethink the way we assign weights)
 
-- Put in stop criterion (for ex. length of path has for 3 iterations been smaller than a threshold)
+- 2: Run physical tests with the robot!
 
-- Remove all hardcoded values to easier optimise script (do this in a branch to avoid fucking up the master)
+- 3: play around with noise and the rate at which random particles are spawned to optimise algorithm. (hard coded values makes this a bit difficult).. Especially the noise at which the particles are moved and rotated after resampling should probably be increased I think. 
 
-DONE!!!- Write and rewrite all robot functions such that when the robot is connected it runs the same script but with actual robot functions.
+- 4: Fill up the (if connected) sections with print functions such that we can monitor what the robot and particle filter is actually doing as we shouldn’t run too many visualisations on the robot (it’s so damn slow!)
 
-DONE!!! - Retest measures taken on robot movement 
+SECOND PRIORITY
+- 1: Set Correct sleep time for robot rotation. The robot is needed for this.
 
-- Set Correct sleep time for robot rotation
+- 2: Remove all hardcoded values to easier optimise script (do this in a branch to avoid fucking up the master)
 
-DONE!!! - Compensate for the fact that sensor and center of rotation is not in the same spot.
+- 3: Optimise algorithm!! This is much easier when hardcoded values are removed and the script has been cleaned up!!
 
-DONE!!! - Make sure the measurements of the robot correspond with those of particles (now some measurements of particles are -1 e.g at the exit) 
+- 4: Dont’ use the angle %= 360 or angle %= math.pi*2. We only want positive values, and this allows for negative values. This is a dangerous task in terms of performance so do it in a branch.
 
-- Optimise algorithm!! This is much easier when hardcoded values are removed and the script has been cleaned up!! (do cleaning in a branch!!!)
+- 5: In relation to task 4 above. Ensure and confirm via tests that rotations are ALWAYS performed either clock wise or counter clock wise
 
-- Run physical tests with the robot!
+- 6: Reconsider measure distance function as the one being used now is currently quite expensive. Google to see if better functions can be implemented!
 
-- DONT use the angle %= 360 or angle %= math.pi*2. This only want positive values, and this allows for negative values
 
+
+
+
+
+
+
+
+###############################
+FININSHED TASKS!!!
+
+DONE- Put in stop criterion (for ex. length of path has for 3 iterations been smaller than a threshold)
+
+DONE- Compensate for the fact that sensor and center of rotation is not in the same spot.
+
+DONE- Make sure the measurements of the robot correspond with those of particles (now some measurements of particles are -1 e.g at the exit) 
+
+DONE- Write and rewrite all robot functions such that when the robot is connected it runs the same script but with actual robot functions.
+
+DONE - Retest measures taken on robot movement 
 
