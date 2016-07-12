@@ -93,6 +93,7 @@ class Particlefilter:
 		 for p in self.particles:
 			 p.weight = 0.0
 			 p.measurements = [0.0,0.0,0.0]
+			 p.rayTracedNodes = {}
 
 	 def updateLocation(self, _angle,_distance):
 	  	"""move all particles as the robot has moved"""
@@ -127,7 +128,6 @@ class Particlefilter:
 					 lines.penup()
 		 turtle.shape('tri')
 		 for p in self.particles:
-			 p.add_noise(self.maze.dimX,self.maze.dimY)
 			 #print(p.x, p.y)
 			 turtle.setposition(p.x,p.y)
 			 heading = (p.orientation/(2*math.pi))*360

@@ -385,7 +385,7 @@ class Maze:
                     else:
                         element = 'O'
                     for particle in _particlefilter.particles:
-                        if i == particle.x and j == particle.y:
+                        if i == int(round(particle.y)) and j == int(round(particle.x)):
                             element = 'P'
                     printRow.append(element)
                 " ".join(printRow)
@@ -403,10 +403,34 @@ class Maze:
                     else:
                         element = 'O'
                     for particle in _particlefilter.particles:
-                        if i == particle.x and j == particle.y:
+                        if i == int(round(particle.y)) and j == int(round(particle.x)):
                             element = 'P'
                         if (i,j) in particle.rayTracedNodes and self.fullLayout[i][j] != 1:
                             element = '*'
+                    printRow.append(element)
+                " ".join(printRow)
+                print(" ".join(printRow))
+
+    def printLayoutAdvancedRobot(self, _robot, _type):
+        """Prints the particles with or without the lines of measurements.
+        type = 6: measurelines of robot
+        """
+
+        if _type == 6:
+            for i in range(0,len(self.fullLayout)):
+                printRow = []
+                for j in range(0, len(self.fullLayout[i])):
+                    element = ' '
+                    if self.fullLayout[i][j] == 0:
+                        element = ' '
+                    elif self.fullLayout[i][j] == 1:
+                        element = 'X'
+                    else:
+                        element = 'O'
+                    if i == int(round(_robot.pr.y)) and j == int(round(_robot.pr.x)):
+                        element = 'P'
+                    if (i,j) in _robot.pr.rayTracedNodes and self.fullLayout[i][j] != 1:
+                        element = '*'
                     printRow.append(element)
                 " ".join(printRow)
                 print(" ".join(printRow))

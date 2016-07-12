@@ -10,9 +10,9 @@ particlefilterNoise = 0 #the noise with which the resampling of points is affect
 noOfParticles = 2000 #number of particles in particle filter
 speedOfRobot = 1
 rotSpeedOfRotation = 1 #how fast the robot rotates
-resolution = 40
+resolution = 50
 fieldSize = 30
-T = 10
+T = 15
 
 layout = [['XXOO', 'OXXO', 'OXXX'],
                   ['XOXO', 'OXXO', 'OXOX'],
@@ -59,21 +59,33 @@ for t in range(T):
     #time.sleep(15)
 i = 0
 while i < 20:
-  print("START ROUND")
-  print(i)
-  maze.update((int(robot.x),int(robot.y)))
+  #print("START ROUND")
+  #print(i)
+  robot.measure()
+  maze.update((int(robot.y),int(robot.x)))
   maze.astar()
-  robot.calculateMovementOnPath(20,maze)
-  print("robotLoc")
+  #print("now it comes")
+  
+
+  #maze.printLayoutAdvanced(2)
+  maze.printLayoutAdvancedRobot(robot,6)
+  # maze.printPath()
+
+  robot.calculateMovementOnPath(8,maze)
+  #robot.movement= [0,0]
+  #print("robotLoc")
+  print(robot.measurement)
   print(int(robot.x), int(robot.y),robot.orientation)
-  print("movement")
-  print(robot.movement)
+  #print("movement")
+  #print(robot.movement)
   robot.move()
-  print("robotLoc")
-  print(int(robot.x), int(robot.y),robot.orientation)
-  maze.printLayoutAdvanced(2)
+  #print("robotLoc")
+  #print(int(robot.x), int(robot.y),robot.orientation)
+  robot.pr.rayTracedNodes ={}
+
   i += 1
 
+print T
 
 #particlefilter.measure()
 #particlefilter.compare(robot)
