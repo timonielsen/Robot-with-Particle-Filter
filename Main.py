@@ -7,7 +7,7 @@ import numpy as np
 layout = 0 #probably an int array
 home = 0 #end of maze
 particlefilterNoise = 0 #the noise with which the resampling of points is affected
-noOfParticles = 5000 #number of particles in particle filter
+noOfParticles = 1000 #number of particles in particle filter
 speedOfRobot = 1
 rotSpeedOfRotation = 1 #how fast the robot rotates
 resolution = 30
@@ -44,12 +44,13 @@ for t in range(T):
   particlefilter.resample()
   maze.update((int(robot.y),int(robot.x)))
   maze.astar()
-  robot.calculateMovementOnPath(8,maze)
+  robot.calculateMovementOnPath(20,maze)
   maze.printLayoutAdvancedRobot(robot,6)
   particlefilter.showParticles(robot.getSimulatedLocation())
   robot.move()
   particlefilter.updateLocation(robot.movement[1], robot.movement[0])
   robot.reset()
+  time.sleep(1)
   
 
   '''
@@ -70,7 +71,7 @@ for t in range(T):
     particlefilter.showParticles(robot.getSimulatedLocation())
     #time.sleep(1)
     '''
-time.sleep(1)
+
 
 '''
     #time.sleep(15)
