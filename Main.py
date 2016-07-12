@@ -48,23 +48,25 @@ for t in range(T):
 
   particlefilter.resample()
   robot.updateBelief(particlefilter.bestParticle.x, particlefilter.bestParticle.y, particlefilter.bestParticle.orientation)
-
-  robot.correct(robot.distFromSensorToRotCenter)
-  particlefilter.correct(robot.distFromSensorToRotCenter)
+  print("Correction: " + str(robot.distFromSensorToRotCenter/maze.cellSize))
+  robot.correct(robot.distFromSensorToRotCenter/maze.cellSize)
+  particlefilter.correct(robot.distFromSensorToRotCenter/maze.cellSize)
 
   maze.update((int(robot.pr.y),int(robot.pr.x)))
   maze.astar()
 
   robot.calculateMovementOnPath(20,maze)
-  maze.printLayoutAdvanced(3)
+  #maze.printLayoutAdvanced(3)
+  maze.printLayoutAdvanced(2)
   #maze.printLayoutAdvancedRobot(robot,6)
-  #particlefilter.showParticles(robot.getSimulatedLocation())
-
+  particlefilter.showParticles(robot.getSimulatedLocation())
+  print("robotMovement: " + str(robot.movement))
   robot.move()
   particlefilter.updateLocation(robot.movement[1], robot.movement[0])
   robot.reset()
+  print("length of path " + str(len(maze.path)))
 
-  if len(maze.path) < resolution/4:
+  if len(maze.path) < resolution/4 + robot.distFromSensorToRotCenter/maze.cellSize:
     noOfTimesItsAssumedWeAreOut+=1
   else: 
     noOfTimesItsAssumedWeAreOut = 0

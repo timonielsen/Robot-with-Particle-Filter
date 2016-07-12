@@ -2,13 +2,17 @@ TODO LIST.
 
 
 FIRST PRIORITY (not in prioritized order):
-- 1: Reassign weights to maze. Check print type 3 (of the maze class) to see how the weights are currently creating weird zones at the end of walls (might have to rethink the way we assign weights)
+DONE - 1: Reassign weights to maze. Check print type 3 (of the maze class) to see how the weights are currently creating weird zones at the end of walls (might have to rethink the way we assign weights)
 
 - 2: Run physical tests with the robot!
 
 - 3: play around with noise and the rate at which random particles are spawned to optimise algorithm. (hard coded values makes this a bit difficult).. Especially the noise at which the particles are moved and rotated after resampling should probably be increased I think. 
 
 - 4: Fill up the (if connected) sections with print functions such that we can monitor what the robot and particle filter is actually doing as we shouldn’t run too many visualisations on the robot (it’s so damn slow!)
+
+- 5: Movefunction doesn’t seem to work as it should!! It doesn’t move as far as it’s supposed to :-/
+
+
 
 SECOND PRIORITY
 - 1: Set Correct sleep time for robot rotation. The robot is needed for this.
