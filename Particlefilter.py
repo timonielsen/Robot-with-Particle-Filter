@@ -73,7 +73,6 @@ class Particlefilter:
 		maxV = 0.0
 		indexOfMaxV = 0
 
-
 		for i in range(self.noOfParticles-1):
 			if (i%10)== 0 :
 				index2 = int(np.random.uniform() * self.noOfParticles)
@@ -91,10 +90,11 @@ class Particlefilter:
 					#indexOfMaxV = i
 
 
-				'''get the best particle'''
+		tempW = 0
+		'''get the best particle'''
 		for i in range(self.noOfParticles):
-			if(self.particles[i].weight > maxW):
-				maxW = self.particles[i].weight
+			if(self.particles[i].weight > tempW):
+				tempW = self.particles[i].weight
 				indexOfMaxV = i
 		bestParticle = Particle.Particle(self.particles[indexOfMaxV].x,self.particles[indexOfMaxV].y,self.particles[indexOfMaxV].orientation)
 		bestParticle.set_noise(5.0, 1.0, 1.0)
@@ -158,7 +158,7 @@ class Particlefilter:
 			 #turtle.update()
 		 turtle.shape('dot')
 		 turtle.color("blue")
-		 turtle.setposition(self.particles[self.noOfParticles-1].x, self.particles[self.noOfParticles-1].y)
+		 turtle.setposition(self.bestParticle.x, self.bestParticle.y)
 		 turtle.stamp()
 		 turtle.shape('turtle')
 		 turtle.color("green")

@@ -168,6 +168,14 @@ class Robot:
         self.pr.rayTracedNodes = {}
         self.measurement = []
 
+    def setLocation(self, _x, _y, _orient):
+        self.x = _x
+        self.y = _y
+        self.orientation = _orient
+        self.pr.x = _x
+        self.pr.y =_y
+        self.pr.orientation = _orient
+
 
 
 def pythagoras(length1, length2):

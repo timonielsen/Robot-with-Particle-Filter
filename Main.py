@@ -41,14 +41,19 @@ for t in range(T):
   robot.measure()
   particlefilter.compare(robot)
   particlefilter.normalize_weights()
+
   particlefilter.resample()
+
   maze.update((int(robot.y),int(robot.x)))
   maze.astar()
+
   robot.calculateMovementOnPath(20,maze)
-  maze.printLayoutAdvancedRobot(robot,6)
+  #maze.printLayoutAdvancedRobot(robot,6)
   particlefilter.showParticles(robot.getSimulatedLocation())
+
   robot.move()
   particlefilter.updateLocation(robot.movement[1], robot.movement[0])
+  robot.setLocation(particlefilter.bestParticle.x, particlefilter.bestParticle.y, particlefilter.bestParticle.orientation)
   robot.reset()
   time.sleep(1)
   
