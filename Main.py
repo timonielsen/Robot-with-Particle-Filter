@@ -10,7 +10,7 @@ particlefilterNoise = 0 #the noise with which the resampling of points is affect
 noOfParticles = 2000 #number of particles in particle filter
 speedOfRobot = 1
 rotSpeedOfRotation = 1 #how fast the robot rotates
-resolution = 60
+resolution = 30
 fieldSize = 30
 T = 40
 
@@ -56,6 +56,7 @@ for t in range(T):
   maze.astar()
 
   robot.calculateMovementOnPath(20,maze)
+  maze.printLayoutAdvanced(3)
   #maze.printLayoutAdvancedRobot(robot,6)
   #particlefilter.showParticles(robot.getSimulatedLocation())
 

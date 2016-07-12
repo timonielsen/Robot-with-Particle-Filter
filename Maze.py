@@ -363,7 +363,7 @@ class Maze:
             for i in range(0,len(self.fullLayout)):
                 printRow = []
                 for j in range(0,len(self.fullLayout[i])):
-                    printRow.append(format(self.allNodes[(i,j)][7],'04d'))
+                    printRow.append(format(self.allNodes[(i,j)][7],'05d'))
                 print(" ".join(printRow))
                 print('')
         return 0
