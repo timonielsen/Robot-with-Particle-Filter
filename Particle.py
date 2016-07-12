@@ -178,6 +178,10 @@ class Particle:
 			self.y = 0.0
 		#self.orientation = (self.orientation + random.gauss(0.0, (self.rotate_noise / 360) * 2 * math.pi)) % (2 * math.pi)
 
+	def correct(self, _correctionDistance):
+		self.x += _correctionDistance * math.sin(self.orientation)
+		self.y -= _correctionDistance * math.cos(self.orientation)
+
 def normalizeAngle(angle):
     newAngle = angle
     iterator = 0

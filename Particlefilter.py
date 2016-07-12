@@ -121,6 +121,10 @@ class Particlefilter:
 			self.particles[i].move(_angle,_distance,self.maze)
 	 	return 0
 
+	 def correct(self, _correctionDistance):
+	 	for p in self.particles:
+	 		p.correct(_correctionDistance)
+
 	 def showParticles(self, _loc):
 		 turtle.tracer(50000, delay=0)
 		 turtle.register_shape("dot", ((-3, -3), (-3, 3), (3, 3), (3, -3)))

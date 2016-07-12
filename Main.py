@@ -46,6 +46,13 @@ for t in range(T):
   particlefilter.resample()
   robot.updateBelief(particlefilter.bestParticle.x, particlefilter.bestParticle.y, particlefilter.bestParticle.orientation)
 
+  particlefilter.showParticles(robot.getSimulatedLocation())
+  time.sleep(0)
+  #robot.correct(robot.distFromSensorToRotCenter)
+  #particlefilter.correct(robot.distFromSensorToRotCenter)
+  particlefilter.showParticles(robot.getSimulatedLocation())
+  time.sleep(0)
+
   maze.update((int(robot.pr.y),int(robot.pr.x)))
   maze.astar()
 

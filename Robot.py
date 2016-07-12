@@ -41,6 +41,8 @@ class Robot:
         self.measurementLimHigh = 1e10 #limit for measurement. Set to some desired value
         self.measurementLimLow = 0
 
+        self.distFromSensorToRotCenter = 7.5 #cm
+
     
 
     def move(self):
@@ -86,7 +88,7 @@ class Robot:
                 enc_tgt(1,1,units)
                 right_rot() #Choose whether it should be clockwise or counterclockwise
                 time.sleep(sleepTime)
-            else
+            else:
                 angle = 2*math.pi-_angle
                 fullCircle = 32 #units
                 partsOfCircle = 2*math.pi/angle #how big a part of a full circle is rotated. eg 90 degrees = 4
@@ -193,6 +195,13 @@ class Robot:
         self.pr.x = _x
         self.pr.y =_y
         self.pr.orientation = _orient
+
+    def correct(self, _correctionDistance):
+        '''corrects for the fact that there is distance between sensor and center of rotation'''
+        self.pr.correct(_correctionDistance)
+        self.prVirtual.correct(_correctionDistance)
+        self.x = int(round(self.prVirtual.x))
+        self.y = int(round(self.prVirtual.y))
 
 
 
