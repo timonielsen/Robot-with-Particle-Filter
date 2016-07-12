@@ -7,10 +7,10 @@ import numpy as np
 layout = 0 #probably an int array
 home = 0 #end of maze
 particlefilterNoise = 0 #the noise with which the resampling of points is affected
-noOfParticles = 1000 #number of particles in particle filter
+noOfParticles = 2000 #number of particles in particle filter
 speedOfRobot = 1
 rotSpeedOfRotation = 1 #how fast the robot rotates
-resolution = 40
+resolution = 60
 fieldSize = 30
 T = 40
 
@@ -37,6 +37,9 @@ particlefilter = Particlefilter.Particlefilter(particlefilterNoise, noOfParticle
 
 #particlefilter.showParticles(robot.getSimulatedLocation())
 
+noOfTimesItsAssumedWeAreOut = 0
+done = False
+
 for t in range(T):
   '''Perform measurements'''
   robot.measure()
@@ -46,24 +49,31 @@ for t in range(T):
   particlefilter.resample()
   robot.updateBelief(particlefilter.bestParticle.x, particlefilter.bestParticle.y, particlefilter.bestParticle.orientation)
 
-  particlefilter.showParticles(robot.getSimulatedLocation())
-  time.sleep(0)
-  #robot.correct(robot.distFromSensorToRotCenter)
-  #particlefilter.correct(robot.distFromSensorToRotCenter)
-  particlefilter.showParticles(robot.getSimulatedLocation())
-  time.sleep(0)
+  robot.correct(robot.distFromSensorToRotCenter)
+  particlefilter.correct(robot.distFromSensorToRotCenter)
 
   maze.update((int(robot.pr.y),int(robot.pr.x)))
   maze.astar()
 
   robot.calculateMovementOnPath(20,maze)
   #maze.printLayoutAdvancedRobot(robot,6)
-  particlefilter.showParticles(robot.getSimulatedLocation())
+  #particlefilter.showParticles(robot.getSimulatedLocation())
 
   robot.move()
   particlefilter.updateLocation(robot.movement[1], robot.movement[0])
   robot.reset()
-  time.sleep(0)
+
+  if len(maze.path) < resolution/4:
+    noOfTimesItsAssumedWeAreOut+=1
+  else: 
+    noOfTimesItsAssumedWeAreOut = 0
+
+  if noOfTimesItsAssumedWeAreOut > 4:
+    robot.movement = [50,0]
+    robot.move()
+    print("FOUND HOME")
+    break
+  #time.sleep(0)
   
 
   '''

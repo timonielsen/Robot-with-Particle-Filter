@@ -82,7 +82,7 @@ class Particle:
 
 		#calculate the metric distance to the point which the ray has hit the wall
 		for i in range(0, len(nonMetricMeasures)):
-			self.measurements[i] = nonMetricMeasures[i] * _maze.fieldsize/_maze.resolution #Checking for division by 0 in initialisation of maze
+			self.measurements[i] = nonMetricMeasures[i] * _maze.fieldsize/_maze.resolution - 2.0 #Checking for division by 0 in initialisation of maze
 		return 0
 
 	def updateLocation(self, _robot):
@@ -178,9 +178,17 @@ class Particle:
 			self.y = 0.0
 		#self.orientation = (self.orientation + random.gauss(0.0, (self.rotate_noise / 360) * 2 * math.pi)) % (2 * math.pi)
 
-	def correct(self, _correctionDistance):
+	def correct(self, _dimX, _dimY, _correctionDistance):
 		self.x += _correctionDistance * math.sin(self.orientation)
 		self.y -= _correctionDistance * math.cos(self.orientation)
+		if self.x >= _dimX:
+			self.x = _dimX - 1
+		if self.y >= _dimY:
+			self.y = _dimY - 1
+		if self.x < 0:
+			self.x = 0.0
+		if self.y < 0:
+			self.y = 0.0
 
 def normalizeAngle(angle):
     newAngle = angle
@@ -198,7 +206,7 @@ def normalizeAngle(angle):
     	if iterator > 1000000:
     		print("An angle calculation in DEF normalizeAngle went wrong. Input angle was " + int(angle))
     		exit()
-    return newAngle;
+    return newAngle
 
 def pythagoras(length1, length2):
 	"""caulcates the hypothenuse length of a diagonal of a right angled triangle"""

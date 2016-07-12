@@ -457,6 +457,27 @@ class Maze:
             " ".join(printRow)
             print(" ".join(printRow))
 
+
+
+def normalizeAngle(angle):
+    newAngle = angle
+    iterator = 0
+
+    while (newAngle < 0):
+        newAngle += 2*math.pi
+        iterator += 1
+        if iterator > 1000000:
+            print("An angle calculation in DEF normalizeAngle went wrong. Input angle was " + int(angle))
+            exit()
+    while (newAngle >= 2*math.pi):
+        newAngle -= 2*math.pi
+        iterator += 1
+        if iterator > 1000000:
+            print("An angle calculation in DEF normalizeAngle went wrong. Input angle was " + int(angle))
+            exit()
+    return newAngle
+
+
 '''
 start = (23, 2)
 resolution = 8

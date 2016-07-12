@@ -13,9 +13,9 @@ DONE!!! - Retest measures taken on robot movement
 
 - Set Correct sleep time for robot rotation
 
-- Compensate for the fact that sensor and center of rotation is not in the same spot.
+DONE!!! - Compensate for the fact that sensor and center of rotation is not in the same spot.
 
-- Make sure the measurements of the robot correspond with those of particles (now some measurements of particles are -1 e.g at the exit) 
+DONE!!! - Make sure the measurements of the robot correspond with those of particles (now some measurements of particles are -1 e.g at the exit) 
 
 - Optimise algorithm!! This is much easier when hardcoded values are removed and the script has been cleaned up!! (do cleaning in a branch!!!)
 

@@ -118,9 +118,11 @@ class Robot:
             for i in range(0, len(self.measurement)):
                 servo(angles[i])
                 time.sleep(sleepTime)
-                self.measurement[i] = us_dist(15)
-            stop()
-            
+                measurement = us_dist(15)
+                if measurement > 150: #hardcoded, not pretty... But is a bit bigger than the diagnoal of the maze
+                    self.measurement[i] = -1
+                else:
+                    self.measurement[i] = measurement            
         else:
             self.measurement = self.simulateMeasurements()
         return self.measurement
@@ -198,8 +200,8 @@ class Robot:
 
     def correct(self, _correctionDistance):
         '''corrects for the fact that there is distance between sensor and center of rotation'''
-        self.pr.correct(_correctionDistance)
-        self.prVirtual.correct(_correctionDistance)
+        self.pr.correct(self.maze.dimX, self.maze.dimY,_correctionDistance)
+        self.prVirtual.correct(self.maze.dimX, self.maze.dimY, _correctionDistance)
         self.x = int(round(self.prVirtual.x))
         self.y = int(round(self.prVirtual.y))
 

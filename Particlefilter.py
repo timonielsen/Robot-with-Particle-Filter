@@ -123,7 +123,7 @@ class Particlefilter:
 
 	 def correct(self, _correctionDistance):
 	 	for p in self.particles:
-	 		p.correct(_correctionDistance)
+	 		p.correct(self.maze.dimX, self.maze.dimY, _correctionDistance)
 
 	 def showParticles(self, _loc):
 		 turtle.tracer(50000, delay=0)
