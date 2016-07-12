@@ -1,0 +1,20 @@
+TODO LIST
+
+
+- Reassign weights to maze. Check print type 3 (of the maze class) to see how the weights are currently not that good at the end of walls
+
+- Put in stop criterion (for ex. length of path has for 3 iterations been smaller than a threshold)
+
+- Remove all hardcoded values to easier optimise script (do this in a branch to avoid fucking up the master)
+
+- Write and rewrite all robot functions such that when the robot is connected it runs the same script but with actual robot functions.
+
+- Retest measures taken on robot movement
+
+- Compensate for the fact that sensor and center of rotation is not in the same spot.
+
+- Make sure the measurements of the robot correspond with those of particles (now some measurements of particles are -1 e.g at the exit) 
+
+- Optimise algorithm!! This is much easier when hardcoded values are removed and the script has been cleaned up!! (do cleaning in a branch!!!)
+
+- Run physical tests with the robot!
