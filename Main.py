@@ -10,9 +10,9 @@ particlefilterNoise = 0 #the noise with which the resampling of points is affect
 noOfParticles = 1000 #number of particles in particle filter
 speedOfRobot = 1
 rotSpeedOfRotation = 1 #how fast the robot rotates
-resolution = 30
+resolution = 40
 fieldSize = 30
-T = 15
+T = 40
 
 layout = [['XXOO', 'OXXO', 'OXXX'],
                   ['XOXO', 'OXXO', 'OXOX'],
@@ -38,24 +38,25 @@ particlefilter = Particlefilter.Particlefilter(particlefilterNoise, noOfParticle
 #particlefilter.showParticles(robot.getSimulatedLocation())
 
 for t in range(T):
+  '''Perform measurements'''
   robot.measure()
   particlefilter.compare(robot)
   particlefilter.normalize_weights()
 
   particlefilter.resample()
+  robot.updateBelief(particlefilter.bestParticle.x, particlefilter.bestParticle.y, particlefilter.bestParticle.orientation)
 
-  maze.update((int(robot.y),int(robot.x)))
+  maze.update((int(robot.pr.y),int(robot.pr.x)))
   maze.astar()
 
   robot.calculateMovementOnPath(20,maze)
-  #maze.printLayoutAdvancedRobot(robot,6)
+  maze.printLayoutAdvancedRobot(robot,6)
   particlefilter.showParticles(robot.getSimulatedLocation())
 
   robot.move()
   particlefilter.updateLocation(robot.movement[1], robot.movement[0])
-  robot.setLocation(particlefilter.bestParticle.x, particlefilter.bestParticle.y, particlefilter.bestParticle.orientation)
   robot.reset()
-  time.sleep(1)
+  time.sleep(0)
   
 
   '''

@@ -21,7 +21,7 @@ class Particle:
 		The better match, the higher weight. Note that the resolution has a huge impact on this measure.
 		"""
 
-		self.measurements = [0.0,0.0,0.0] #calculated distances to nearby walls
+		self.measurements = [0.0,0.0,0.0,0.0,0.0] #calculated distances to nearby walls
 		self.manhattanDist = [0.0,0.0,0.0,0.0]
 		self.weight = 1.0 #
 		self.weight2 = 1.0

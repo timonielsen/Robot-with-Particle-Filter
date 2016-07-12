@@ -74,7 +74,7 @@ class Particlefilter:
 		indexOfMaxV = 0
 
 		for i in range(self.noOfParticles-1):
-			if (i%10)== 0 :
+			if (i%8)== 0 :
 				index2 = int(np.random.uniform() * self.noOfParticles)
 				resampledparticles.append(Particle.Particle(random.random()*self.maze.dimX, random.random()*self.maze.dimY, random.random()*math.pi*2))
 				resampledparticles[i].set_noise(5.0, 1.0, 1.0)
@@ -89,9 +89,8 @@ class Particlefilter:
 					#maxW = self.particles[index].weight
 					#indexOfMaxV = i
 
-
-		tempW = 0
 		'''get the best particle'''
+		tempW = 0
 		for i in range(self.noOfParticles):
 			if(self.particles[i].weight > tempW):
 				tempW = self.particles[i].weight

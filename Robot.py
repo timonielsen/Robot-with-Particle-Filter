@@ -19,15 +19,15 @@ class Robot:
         self.x = 5.0 #location, initiliased to zero as the robot initialy has no clue where it is
         self.y = 25.0
         self.orientation = 0.6*(math.pi/2) #[0, 2PI]
-        self.pr = Particle.Particle(self.x, self.y, self.orientation) # since we don't have any data for robot, for simulation
-        # robot is defined as particle
+        self.prVirtual = Particle.Particle(self.x, self.y, self.orientation) #virtual location for when robot is not connected
+        self.pr = Particle.Particle(self.x, self.y, self.orientation) #belief location
         self.pr.set_noise(5.0, 1.0, 1.0) # these are for movement and sense distribution
         
         self.speed = _speed; #Speed with which the robot moves forwards
         self.rotationSpeed = _rotationSpeed; #
         
         self.movement = [0,0] # stores the last movement [length moved, rotation]
-        self.measurement = [0.0,0.0,0.0] #we can always re evaluate number of points here. DO NOT MAKE ANY HARD CODED LOOPS.
+        self.measurement = [0.0,0.0,0.0,0.0,0.0] #we can always re evaluate number of points here. DO NOT MAKE ANY HARD CODED LOOPS.
         
         #The following are hard coded values found from measurements of the precision of robot movement. Length of arrays to be determined
         self.moveVar = [0,0,0,0,0] #variance in distance actually moved
@@ -86,6 +86,10 @@ class Robot:
     def measure(self): 
         """Updates measurement[] with a series of measurements."""
         if connected:
+            angles = []
+            for i in range(0,len(self.measurements)):
+                angle = self.orientation + math.pi/2.0 - i * math.pi / (len(self.measurements)-1) # calculates the angles for which the sensors measure
+                angle = normalizeAngle(angle)
             sleepTime = 0.5 #Set time between measures (has to be there for the program to wait with the next command until rotation is done)
             servo(179)
             time.sleep(sleepTime)
@@ -117,24 +121,25 @@ class Robot:
         return 0
 
     def simulateMeasurements(self):
-        self.pr.calcDistance(self.maze)
-        return self.pr.measurements
+        self.prVirtual.calcDistance(self.maze)
+        return self.prVirtual.measurements
 
     def simulateMove(self,_angle,_distance):
         print(self.pr.x)
         self.pr.move(_angle,_distance,self.maze)
-        self.x = int(round(self.pr.x))
-        self.y = int(round(self.pr.y))
-        self.orientation = self.pr.orientation
+        self.prVirtual.move(_angle,_distance,self.maze)
+        self.x = int(round(self.prVirtual.x))
+        self.y = int(round(self.prVirtual.y))
+        self.orientation = self.prVirtual.orientation
         print(self.pr.x)
         print("done here")
         return 0
 
     def getSimulatedLocation(self):
-        return self.pr.getStateofParticle()
+        return self.prVirtual.getStateofParticle()
 
     def calculateMovementOnPath(self, _distance, _maze):
-        if _distance == 0:
+        if _distance == 0 or len(_maze.path) == 0:
             self.movement = [0,0]
             return
 
@@ -168,10 +173,7 @@ class Robot:
         self.pr.rayTracedNodes = {}
         self.measurement = []
 
-    def setLocation(self, _x, _y, _orient):
-        self.x = _x
-        self.y = _y
-        self.orientation = _orient
+    def updateBelief(self, _x, _y, _orient):
         self.pr.x = _x
         self.pr.y =_y
         self.pr.orientation = _orient
