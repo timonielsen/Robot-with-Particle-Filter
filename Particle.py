@@ -38,10 +38,12 @@ class Particle:
 			angles.append(angle)
 
 		'''make lines for measurements'''
-		lines = []
+		endPoints = []
 		for i in range(0,len(angles)):
-			lines.append([(float(self.y), float(self.x)), (float(self.y) + 3*maxDist*math.cos(angles[i]), float(self.x) - 3*maxDist*math.sin(angles[i]))])
+			lines.append((3*maxDist*math.cos(angles[i]), float(self.x) - 3*maxDist*math.sin(angles[i])))
 		nonMetricMeasures = []
+
+
 
 		for i in range(0,len(angles)):
 			foundIntersection = False
