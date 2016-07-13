@@ -27,7 +27,7 @@ maze2 = np.array([  \
                   [1, 0, 0, 0, 0, 0, 1], \
                   [1, 1, 1, 1, 1, 0, 1]])
 
-print maze2
+#print maze2
 
 maze = Maze.Maze(layout, resolution, fieldSize)
 #print maze.fullLayout
@@ -43,8 +43,15 @@ done = False
 for t in range(T):
   '''Perform measurements'''
   robot.measure()
+  print("Robot location: " + str(robot.x) + "," + str(robot.y))
+  print("Robot orientation: " + str(robot.orientation))
+  print("Robot belief location: " + str(robot.pr))
+  print("Robot movement: " + str(robot.movement))
+  print("Robot measurement: " + str(robot.measurement))
+  
   particlefilter.compare(robot)
   particlefilter.normalize_weights()
+  print("Particlefilter bestParticle: " + str(particlefilter.bestParticle.x) + "," + str(particlefilter.bestParticle.y) + "," + str(particlefilter.bestParticle.orientation))
 
   particlefilter.resample()
   robot.updateBelief(particlefilter.bestParticle.x, particlefilter.bestParticle.y, particlefilter.bestParticle.orientation)
