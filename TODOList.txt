@@ -12,6 +12,7 @@ DONE - 1: Reassign weights to maze. Check print type 3 (of the maze class) to se
 
 - 5: Movefunction doesn’t seem to work as it should!! It doesn’t move as far as it’s supposed to :-/
 
+- 6: Write dist function as intersection with lines instead.
 
 
 SECOND PRIORITY
