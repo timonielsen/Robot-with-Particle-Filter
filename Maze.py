@@ -39,6 +39,14 @@ class Maze:
         self.path = [] #The path from location of robot to the exit
         self.nodeSetup()
 
+        #WALLS WARNING: THESE ARE TO OPTIMISE THE DISTANCE FUNCTION!!
+        self.walls =[[(0,0), (1.0*self.dimY,0)], 
+                     [(0,0), (0,1.0*self.dimX)],
+                     [(0,1.0*self.dimX), (1.0*self.dimY,1.0*self.dimX)],
+                     [(1.0*self.dimY,0), (1.0*self.dimY,self.dimX*2.0/3)],
+                     [(self.dimY*2.0/3,0), (self.dimY*2.0/3,self.dimX*2.0/3)],
+                     [(self.dimY*1.0/3,self.dimX*1.0/3), (self.dimY*1.0/3,self.dimX)]] #HARDCODED I REALLY DON'T WANT TO MAKE THIS AUTOMATIC
+
     def layoutMaker(self):
         """ Buid a layout from a very simple layout. The layout must be rectangular!!!
         Each cell is a four char string where each char tells wether there is a wall next to cell.

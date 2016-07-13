@@ -33,15 +33,23 @@ class Particlefilter:
 	 		self.particles.append(Particle.Particle(init_xcoordinates[i],init_ycoordinates[i],init_angles[i])) #change to some random value
 			self.particles[i].set_noise(5.0,1.0,1.0)
 			'''
+		'''
 		for i in range(self.noOfParticles):
 	 		self.particles.append(Particle.Particle(random.random()*_maze.dimY,random.random()*_maze.dimX,random.random()*math.pi*2)) #change to some random value
+			self.particles[i].set_noise(5.0,1.0,1.0)
+		'''
+
+		for i in range(self.noOfParticles):
+	 		self.particles.append(Particle.Particle(1.0/3*_maze.dimY,1/2.0*_maze.dimX, 0 )) #change to some random value
 			self.particles[i].set_noise(5.0,1.0,1.0)
 
 	 def measure(self):
 	 	"""for each particles calculate the distance to the walls"""
 	 	for i in range(self.noOfParticles):
-	 		self.particles[i].calcDistance(self.maze)
+	 		#self.particles[i].calcDistanceSmarter(self.maze)
 	 		#print(self.particles[i].measurements)
+	 		return 0
+	 	
 
 
 	 def compare(self, _robot):
@@ -50,7 +58,12 @@ class Particlefilter:
 		self.weights = []
 		for p in self.particles:
 			p.calcDistance(self.maze)
+			print("measure 1")
+			print(p.measurements)
 			self.weights.append(p.measure_prob(robotDistance))
+			p.calcDistanceSmarter(self.maze)
+			print("measure 2")
+	 		print(p.measurements)
 	 	return 0
 
 	 def normalize_weights(self):

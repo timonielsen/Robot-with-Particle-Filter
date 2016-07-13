@@ -26,6 +26,56 @@ class Particle:
 		self.weight = 1.0 #
 		self.weight2 = 1.0
 
+	def calcDistanceSmarter(self, _maze):
+		angles = [] #The orientations at which the measurements are carried out
+		maxDist = pythagoras(_maze.dimX, _maze.dimY) * 1.1 #A distance greater than the diagonal of the maze doesn't make sense
+		#TODO update to whatever distance the robot can actually measure. Maybe somehow get it from the robot class.
+
+		"""This loop calculates the angles in which the particle will measure"""
+		for i in range(0,len(self.measurements)):
+			angle = self.orientation + math.pi/2.0 - i * math.pi / (len(self.measurements)-1)			
+			angle = normalizeAngle(angle)
+			angles.append(angle)
+
+		'''make lines for measurements'''
+		lines = []
+		for i in range(0,len(angles)):
+			lines.append([(float(self.y), float(self.x)), (float(self.y) + 3*maxDist*math.cos(angles[i]), float(self.x) - 3*maxDist*math.sin(angles[i]))])
+		nonMetricMeasures = []
+
+		for i in range(0,len(angles)):
+			foundIntersection = False
+			intersectionDistance = 10000000
+			for j in range(0,len(_maze.walls)): 
+				#if doIntersect(lines[i][0], lines[i][1], _maze.walls[j][0], _maze.walls[j][1]):
+				result = findIntersectionPointbetweenLines(lines[i][0], lines[i][1], _maze.walls[j][0], _maze.walls[j][1])
+				#else:
+				#	continue
+				if result[2] == 0:
+					continue
+				else:
+					foundIntersection = True
+				yi = result[0]
+				xi = result[1]
+				newDist = pythagoras(lines[i][0][0] - yi,lines[i][0][1]-xi)
+				if newDist < intersectionDistance:
+					intersectionDistance = newDist
+
+			if foundIntersection:
+				nonMetricMeasures.append(intersectionDistance)
+			else: 
+				nonMetricMeasures.append(-1)
+
+
+		#calculate the metric distance to the point which the ray has hit the wall
+		for i in range(0, len(nonMetricMeasures)):
+			self.measurements[i] = nonMetricMeasures[i] * _maze.fieldsize/_maze.resolution - 2.0 #Checking for division by 0 in initialisation of maze
+		return 0
+
+
+
+
+
 	def calcDistance(self, _maze):
 		"""calculates distance to nearby walls and updates measurements[]"""
 		"""The function is fairly expensive, so limiting the amount of measures will greatly increase speed"""
@@ -39,6 +89,7 @@ class Particle:
 			angle = self.orientation + math.pi/2.0 - i * math.pi / (len(self.measurements)-1) # calculates the angles for which the sensors measure
 			angle = normalizeAngle(angle)
 			angles.append(angle)
+
 
 		"""The distance the particle measures to the walls is calculated as follows.
 		It's assumed a ray is shot out from the particle location [x,y]. We then simply start considering the node
@@ -221,16 +272,124 @@ def iround(x):
     return int(round(x) - .5) + (x > 0)
 
 
-'''Class Particle
-#Variables
-int x, y;
-float orientation;
-float[] measurements;
-double weight;
+# stolen from https://www.cs.hmc.edu/ACM/lectures/intersections.html
 
-#functions
-void calcDistance(Maze Maze);
-void updateLocation(Robot robot);
-void updateWeight(Robot robot);
-void normalizeWeight(float n);
-'''
+def findIntersectionPointbetweenLines( pt1, pt2, ptA, ptB ): 
+    """ this returns the intersection of Line(pt1,pt2) and Line(ptA,ptB)
+        
+        returns a tuple: (xi, yi, valid, r, s), where
+        (xi, yi) is the intersection
+        r is the scalar multiple such that (xi,yi) = pt1 + r*(pt2-pt1)
+        s is the scalar multiple such that (xi,yi) = pt1 + s*(ptB-ptA)
+            valid == 0 if there are 0 or inf. intersections (invalid)
+            valid == 1 if it has a unique intersection ON the segment    """
+
+    DET_TOLERANCE = 0.00000001
+
+    # the first line is pt1 + r*(pt2-pt1)
+    # in component form:
+    x1, y1 = pt1;   x2, y2 = pt2
+    dx1 = x2 - x1;  dy1 = y2 - y1
+
+    # the second line is ptA + s*(ptB-ptA)
+    x, y = ptA;   xB, yB = ptB;
+    dx = xB - x;  dy = yB - y;
+
+    # we need to find the (typically unique) values of r and s
+    # that will satisfy
+    #
+    # (x1, y1) + r(dx1, dy1) = (x, y) + s(dx, dy)
+    #
+    # which is the same as
+    #
+    #    [ dx1  -dx ][ r ] = [ x-x1 ]
+    #    [ dy1  -dy ][ s ] = [ y-y1 ]
+    #
+    # whose solution is
+    #
+    #    [ r ] = _1_  [  -dy   dx ] [ x-x1 ]
+    #    [ s ] = DET  [ -dy1  dx1 ] [ y-y1 ]
+    #
+    # where DET = (-dx1 * dy + dy1 * dx)
+    #
+    # if DET is too small, they're parallel
+    #
+    DET = (-dx1 * dy + dy1 * dx)
+
+    if math.fabs(DET) < DET_TOLERANCE: return (0,0,0,0,0)
+
+    # now, the determinant should be OK
+    DETinv = 1.0/DET
+
+    # find the scalar amount along the "self" segment
+    r = DETinv * (-dy  * (x-x1) +  dx * (y-y1))
+
+    # find the scalar amount along the input line
+    s = DETinv * (-dy1 * (x-x1) + dx1 * (y-y1))
+
+    # return the average of the two descriptions
+    xi = (x1 + r*dx1 + x + s*dx)/2.0
+    yi = (y1 + r*dy1 + y + s*dy)/2.0
+    return ( xi, yi, 1, r, s )
+
+
+
+
+# Given three colinear points p, q, r, the function checks if
+# point q lies on line segment 'pr'
+def onSegment(p, q, r):
+    if q[0] <= max(p[0], r[0]) and q[0] >= min(p[0], r[0]) and q[1] <= max(p[1], r[1]) and q[1] >= min(p[1], r[1]):
+       return True
+    return False
+ 
+# To find orientation of ordered triplet (p, q, r).
+# The function returns following values
+# 0 --> p, q and r are colinear
+# 1 --> Clockwise
+# 2 --> Counterclockwise
+def orientation(p, q, r):
+    #See http://www.geeksforgeeks.org/orientation-3-ordered-points/
+    #for details of below formula.
+    val = (q[1] - p[1]) * (r[0] - q[0]) - (q[0] - p[0]) * (r[1] - q[1])
+    print(val)
+    if val == 0:
+    	return 0  # colinear
+ 	if val > 0:
+ 		return 1
+ 	else: 
+ 		return 2
+ 
+# The main function that returns true if line segment 'p1q1'
+# and 'p2q2' intersect.
+def doIntersect(p1, q1, p2, q2):
+    #Find the four orientations needed for general and
+    #special cases
+    o1 = orientation(p1, q1, p2);
+    o2 = orientation(p1, q1, q2);
+    o3 = orientation(p2, q2, p1);
+    o4 = orientation(p2, q2, q1);
+ 
+    # General case
+    if o1 != o2 and o3 != o4:
+        return True
+ 
+     #Special Cases
+    # p1, q1 and p2 are colinear and p2 lies on segment p1q1
+    if o1 == 0 and onSegment(p1, p2, q1): 
+    	return True
+ 
+    #p1, q1 and p2 are colinear and q2 lies on segment p1q1
+    if o2 == 0 and onSegment(p1, q2, q1): 
+    	return True;
+ 
+    #p2, q2 and p1 are colinear and p1 lies on segment p2q2
+    if o3 == 0 and onSegment(p2, p1, q2):
+    	return True;
+ 
+     #p2, q2 and q1 are colinear and q1 lies on segment p2q2
+    if o4 == 0 and onSegment(p2, q1, q2):
+    	return True
+ 
+    return False #// #Doesn't fall in any of the above cases
+
+ 
