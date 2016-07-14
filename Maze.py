@@ -457,6 +457,18 @@ class Maze:
             " ".join(printRow)
             print(" ".join(printRow))
 
+    def isWall(self, i,j):
+        i = int(round(i))
+        j = int(round(j))
+        if i<0 or i>(self.dimY-1):
+            return False
+        if j<0 or j>(self.dimX-1):
+            return False
+        if self.fullLayout[i][j] == 1:
+            return True
+        else:
+            return False
+
 
 
 def normalizeAngle(angle):

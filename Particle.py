@@ -26,6 +26,124 @@ class Particle:
 		self.weight = 1.0 #
 		self.weight2 = 1.0
 
+
+	def calcDistanceSmarter(self, _maze):
+		angles = [] #The orientations at which the measurements are carried out
+		maxDist = pythagoras(_maze.dimX, _maze.dimY) * 1.1 #A distance greater than the diagonal of the maze doesn't make sense
+		#TODO update to whatever distance the robot can actually measure. Maybe somehow get it from the robot class.
+
+		"""This loop calculates the angles in which the particle will measure"""
+		for i in range(0,len(self.measurements)):
+			angle = self.orientation + math.pi/2.0 - i * math.pi / (len(self.measurements)-1) # calculates the angles for which the sensors measure
+			angle = normalizeAngle(angle)
+			angles.append(angle)
+
+		'''make lines for measurements'''
+		endPoints = []
+		for i in range(0,len(angles)):
+			endPoints.append([float(self.y) + 3*maxDist*math.cos(angles[i]), float(self.x) - 3*maxDist*math.sin(angles[i])])
+
+		yLines = [0, _maze.dimY/3*1, _maze.dimY/3*2, _maze.dimY]
+		xLines = [0, _maze.dimX/3*1, _maze.dimX/3*2, _maze.dimX]
+
+		nonMetricMeasures = []
+		for i in range(0,len(angles)):
+			tempDist = 10000000
+			yLength = abs(self.y - endPoints[i][0])+0.000000001
+			xLength = abs(self.x - endPoints[i][1])+0.000000001
+			if endPoints[i][0] < self.y:
+				if endPoints[i][1] < self.x:
+					#COND 1
+					for l in yLines:
+						if l < self.y:
+							yFrac = abs((self.y - l))/yLength #always posiutive
+							xDif = xLength * yFrac #always positive
+							x = self.x - xDif
+							iDist = pythagoras(self.y-l, self.x-x)
+							if _maze.isWall(l, x): 
+								if iDist < tempDist:
+									tempDist = iDist
+					for l in xLines:
+						if l < self.x:
+							xFrac = abs((self.x - l))/xLength #always posiutive
+							yDif = yLength * xFrac #always positive
+							y = self.y - yDif
+							iDist = pythagoras(self.y-y, self.x-l) 
+							if _maze.isWall(y, l): 
+								if iDist < tempDist:
+									tempDist = iDist
+				else:
+					#Condition 2
+					for l in yLines:
+						if l < self.y:
+							yFrac = abs((self.y - l))/yLength #always posiutive
+							xDif = xLength * yFrac #always positive
+							x = self.x + xDif
+							iDist = pythagoras(self.y-l, self.x-x) 
+							if _maze.isWall(l, x): 
+								if iDist < tempDist:
+									tempDist = iDist
+					for l in xLines:
+						if l > self.x:
+							xFrac = abs((self.x - l))/xLength #always posiutive
+							yDif = yLength * xFrac #always positive
+							y = self.y - yDif
+							iDist = pythagoras(self.y-y, self.x-l) 
+							if _maze.isWall(y, l): 
+								if iDist < tempDist:
+									tempDist = iDist
+			else:
+				if endPoints[i][1] < self.x:
+					#COND 1
+					for l in yLines:
+						if l > self.y:
+							yFrac = abs((self.y - l))/yLength #always posiutive
+							xDif = xLength * yFrac #always positive
+							x = self.x - xDif
+							iDist = pythagoras(self.y-l, self.x-x)
+							if _maze.isWall(l, x): 
+								if iDist < tempDist:
+									tempDist = iDist
+					for l in xLines:
+						if l < self.x:
+							xFrac = abs((self.x - l))/xLength #always posiutive
+							yDif = yLength * xFrac #always positive
+							y = self.y + yDif
+							iDist = pythagoras(self.y-y, self.x-l) 
+							if _maze.isWall(y, l): 
+								if iDist < tempDist:
+									tempDist = iDist
+				else:
+					#Condition 2
+					for l in yLines:
+						if l > self.y:
+							yFrac = abs((self.y - l))/yLength #always posiutive
+							xDif = xLength * yFrac #always positive
+							x = self.x + xDif
+							iDist = pythagoras(self.y-l, self.x-x) 
+							if _maze.isWall(l, x): 
+								if iDist < tempDist:
+									tempDist = iDist
+					for l in xLines:
+						if l > self.x:
+							xFrac = abs((self.x - l))/xLength #always posiutive
+							yDif = yLength * xFrac #always positive
+							y = self.y + yDif
+							iDist = pythagoras(self.y-y, self.x-l) 
+							if _maze.isWall(y, l): 
+								if iDist < tempDist:
+									tempDist = iDist
+
+			if tempDist == 10000000:
+				nonMetricMeasures.append(-1)
+			else:
+				nonMetricMeasures.append(tempDist)
+
+		#calculate the metric distance to the point which the ray has hit the wall
+		for i in range(0, len(nonMetricMeasures)):
+			self.measurements[i] = nonMetricMeasures[i] * _maze.fieldsize/_maze.resolution - 2.0 #Checking for division by 0 in initialisation of maze
+		return 0
+
 	def calcDistance(self, _maze):
 		"""calculates distance to nearby walls and updates measurements[]"""
 		"""The function is fairly expensive, so limiting the amount of measures will greatly increase speed"""

@@ -49,7 +49,12 @@ class Particlefilter:
 		robotDistance = _robot.measurement
 		self.weights = []
 		for p in self.particles:
-			p.calcDistance(self.maze)
+			#p.calcDistance(self.maze)
+			#print("measurement 1")
+			#print(p.measurements)
+			p.calcDistanceSmarter(self.maze)
+			#print("measurement 2")
+			#print(p.measurements)
 			self.weights.append(p.measure_prob(robotDistance))
 	 	return 0
 
